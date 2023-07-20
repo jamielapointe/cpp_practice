@@ -1,0 +1,28 @@
+name: "setup_cache"
+description: "sets up the shared cache"
+inputs:
+  compiler:
+    description: "Name of the compiler"
+    required: true
+  build_type:
+    description: "The CMake Build Type; e.g., Release, Debug"
+    required: true
+  generator:
+    description: "The CMake Generator (e.g., Ninja, Unix Makefiles)"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache
+      uses: actions/cache@v3
+      with:
+        # You might want to add .ccache to your cache configuration?
+        path: |
+          ~/.cache/pip
+          ~/.ccache
+        key:
+          ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}-${{
+          inputs.generator }}-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}

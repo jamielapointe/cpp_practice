@@ -1,0 +1,238 @@
+# Handle the creation of a project based on this template
+# This will rename all references of the template name to the project name
+# This will remove whatever is not needed
+
+name: template_cleanup
+on:
+  create:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+      - develop
+permissions:
+  contents: write
+
+env:
+  TEMPLATES_PATH: ".github/template"
+  PROJECT_NAME: modern_cpp_template
+  NEW_ORG: ""
+  NEW_PROJECT: ""
+  NEW_SAFE_PROJECT: ""
+
+jobs:
+  Template_Cleanup:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - g++-12
+        generator:
+          - "Ninja"
+        build_type:
+          - "Release"
+        include:
+          - compiler: g++-12
+            ccompiler: gcc-12
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4 ghostscript
+
+      - name: Setup Cache
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
+
+      - name: Get organization and project name
+        run: |
+          echo "NEW_ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "NEW_PROJECT=${{ github.event.repository.name }}" >> $GITHUB_ENV
+
+      - uses: octokit/request-action@v2.x
+        id: get_repo_meta
+        with:
+          route: GET /repos/{owner}/{repo}
+          owner: ${{ env.NEW_ORG }}
+          repo: ${{ env.NEW_PROJECT }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use testing variables if still a template
+        if: fromJson(steps.get_repo_meta.outputs.data).is_template == true
+        run: |
+          # This name is unsafe because it is not a valid C++ identifier
+          echo "NEW_PROJECT=my-unsafe.project" >> $GITHUB_ENV
+
+      - name: Add safe replacement variable versions
+        run: |
+          # hyphens and dots in c++ identifiers are forbidden. Use underscores instead.
+          NEW_SAFE_PROJECT=$(echo ${{ env.NEW_PROJECT }} | sed "s/-/_/g" | sed "s/\./_/g" )
+          echo "NEW_SAFE_PROJECT=$NEW_SAFE_PROJECT" >> $GITHUB_ENV
+
+      # Rename all modern_cpp_template occurences to current repository and remove this workflow
+      - name: Insert new org and project
+        run: |
+          # rename the CMake project to match the github project
+          find src include test fuzz_test cmake benchmark configured_files \
+            -type f \
+            -exec sed -i "s/modern_cpp_template/${{ env.NEW_SAFE_PROJECT }}/gi" \
+            .all-contributorsrc \
+            .clang-tidy \
+            CMakeLists.txt \
+            INSTALL.md \
+            .github/CONTRIBUTING.md \
+            .github/CONTRIBUTORS.md \
+            .github/SECURITY.md \
+            .github/workflows/ci.yml \
+            .github/workflows/codeql_analysis.yml \
+            docs/mainpage.md \
+            {} +
+
+          # fill in placeholders of readme and move it into place
+          sed -i "s/%%myorg%%/${{ env.NEW_ORG }}/g" ${{ env.TEMPLATES_PATH }}/README.md
+          sed -i "s/%%myproject%%/${{ env.NEW_PROJECT }}/g" ${{ env.TEMPLATES_PATH }}/README.md
+          sed -i "s|%%description%%|${{ fromJson(steps.get_repo_meta.outputs.data).description }}|g" ${{ env.TEMPLATES_PATH }}/README.md
+          sed -i "s/<\!-- markdownlint-disable -->/ /g" ${{ env.TEMPLATES_PATH }}/README.md
+          mv configured_files/modern_cpp_template_config.h.in configured_files/${{ env.NEW_SAFE_PROJECT }}_config.h.in
+          mv include/modern_cpp_template include/${{ env.NEW_SAFE_PROJECT }}
+          mv include/${{ env.NEW_SAFE_PROJECT }}/modern_cpp_template_asserts.h include/${{ env.NEW_SAFE_PROJECT }}/${{ env.NEW_SAFE_PROJECT }}_asserts.h
+          cp ${{ env.TEMPLATES_PATH }}/README.md README.md
+
+      - name: Print diff after replacement
+        run: |
+          # Exclude the README as that is checked separately!
+          git diff ':!README.md'
+          # following should not have any diffs
+          diff ${{ env.TEMPLATES_PATH }}/README.md README.md
+
+      - name: Remove unwanted files
+        run: |
+          # No tests needed as this will fail if any file from the list is missing/misspelled
+          xargs rm -r < ${{ env.TEMPLATES_PATH }}/removal_list
+
+      - name: Clean up before commit and push
+        run: |
+          rm -r ${{ env.TEMPLATES_PATH }}
+
+          # Can we get that from a variable?
+          # Remove this workflow as it has fulfilled its purpose
+          rm .github/workflows/template_cleanup.yml
+
+      # Ensure we did not break anything
+      - name: Ensure still builds
+        run: |
+          cmake -S . -B ./build -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }}
+          cmake --build build
+
+      - uses: EndBug/add-and-commit@v9
+        # only commit and push if we are not a template project anymore!
+        # prettier-ignore
+        if: fromJson(steps.get_repo_meta.outputs.data).is_template != true
+        with:
+          add: -A
+          author_name: Template Janitor
+          author_email: template.janitor@example.com
+          message: "Change Template Name"
+          pathspec_error_handling: exitImmediately
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  Template_Rename:
+    name: Renames template when a new name is detected
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler:
+          - g++-12
+        generator:
+          - "Ninja"
+        build_type:
+          - "Release"
+        include:
+          - compiler: g++-12
+            ccompiler: gcc-12
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4 ghostscript
+
+      - name: Setup Cache
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
+
+      - name: Get organization and project name
+        run: |
+          echo "TEST_RUN=false" >> $GITHUB_ENV
+          echo "NEW_ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "NEW_PROJECT=${{ github.event.repository.name }}" >> $GITHUB_ENV
+          echo "NEW_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
+          echo "TEMPLATE_NAME=`cat ${{ env.TEMPLATES_PATH }}/template_name`" >> $GITHUB_ENV
+          echo "TEMPLATE_REPOSITORY=`cat ${{ env.TEMPLATES_PATH }}/template_repository`" >> $GITHUB_ENV
+
+      - uses: octokit/request-action@v2.x
+        id: get_repo_meta
+        with:
+          route: GET /repos/{owner}/{repo}
+          owner: ${{ env.NEW_ORG }}
+          repo: ${{ env.NEW_PROJECT }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup fake test org/project names if project didn't change
+        if: env.TEMPLATE_NAME == env.NEW_PROJECT
+        run: |
+          echo "TEST_RUN=true" >> $GITHUB_ENV
+          echo "NEW_ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "NEW_PROJECT=TEST_PROJECT" >> $GITHUB_ENV
+          echo "NEW_REPOSITORY=TEST_REPOSITORY" >> $GITHUB_ENV
+
+      # Rename all modern_cpp_template occurrences to current repository and remove this workflow
+      - name: Update repository to match new template information
+        run: |
+          # Update the README and template files to match the new org / repository names
+          sed -i "s|${{ env.TEMPLATE_REPOSITORY }}|${{ env.NEW_REPOSITORY }}|g" README.md ${{ env.TEMPLATES_PATH }}/template_repository
+          sed -i "s|${{ env.TEMPLATE_NAME }}|${{ env.NEW_PROJECT }}|g" README.md ${{ env.TEMPLATES_PATH }}/template_name
+
+      - name: Print diff after template name replacement
+        run: |
+          git diff
+
+      # Ensure we did not break anything
+      - name: Ensure still builds
+        run: |
+          cmake -S . -B ./build -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }}
+          cmake --build build
+
+      - uses: EndBug/add-and-commit@v9
+        # only commit and push if we are a template and project name has changed
+        # prettier-ignore
+        if: fromJson(steps.get_repo_meta.outputs.data).is_template == true && env.TEST_RUN == 'false'
+        with:
+          add: -A
+          author_name: Template Janitor
+          author_email: template.janitor@example.com
+          message: "Change Template Name"
+          pathspec_error_handling: exitImmediately
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,218 @@
+# Currently this is only support Ubuntu 22.04 with gcc 12 and llvm/clang 16 compilers
+
+name: ci
+on:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+      - develop
+
+env:
+  VERBOSE: 1
+  PROJECT_NAME: ""
+
+jobs:
+  Cpp_Format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install clang-format
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10.9"
+          cache: "pip"
+          cache-dependency-path: "tools/requirements-dev.txt"
+
+      - name: Install Python requirements
+        run: pip install -r tools/requirements-dev.txt
+
+      - name: Verify C++ code adheres to style guide
+        run:
+          python tools/scripts/run_clang_format.py -r --clang-format-executable
+          clang-format-16
+
+  # To many things about building and testing are a bit OS depdenent, so create seperate jobs for each OS
+  LinuxTests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - clang++-16
+          - g++-12
+        generator:
+          - "Ninja"
+        build_type:
+          - Release
+          - Debug
+        sanitizers:
+          - true
+          - false
+        enable_ipo:
+          - true
+          - false
+        include:
+          # Add appropriate variables for gcov version required. This will intentionally break
+          # if you try to use a compiler that does not have gcov set
+          - compiler: g++-12
+            gcov_executable: gcov-12
+            ccompiler: gcc-12
+            cmake_ar: ar-12
+            cmake_ranlib: ranlib-12
+
+          # Source based code coverage
+          - compiler: clang++-16
+            gcov_executable: "llvm-cov-16 gcov"
+            ccompiler: clang-16
+            cmake_ar: llvm-ar-16
+            cmake_ranlib: llvm-ranlib-16
+
+          # Set up preferred package generators, for given build configurations
+          - build_type: Release
+            package_generator: TBZ2
+
+          # This exists solely to make sure a Unix Makefile build works
+          - os: ubuntu-latest
+            compiler: clang++-16
+            generator: "Unix Makefiles"
+            build_type: Release
+            enable_ipo: true
+            gcov_executable: "llvm-cov-16 gcov"
+            ccompiler: clang-16
+            cmake_ar: llvm-ar-16
+            cmake_ranlib: llvm-ranlib-16
+            sanitizers: true
+
+        exclude:
+          - compiler: g++-12
+            build_type: Release
+            sanitizers: true
+          - build_type: Debug
+            enable_ipo: true
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Tools
+        run: |
+          # Install LLVM/clang 16
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 16 all
+
+          # Install other tools
+          sudo apt-get --yes --quiet install cmake ninja-build ccache cppcheck gcovr gcc-12 g++-12 gcc-12-doc doxygen graphviz texlive-latex-extra libpfm4 ghostscript
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+
+          # Get the latest version of doxygen
+          wget https://www.doxygen.nl/files/doxygen-1.9.7.linux.bin.tar.gz
+          mkdir -p ~/.local/bin
+          tar -xC ~/.local/bin -f doxygen-1.9.7.linux.bin.tar.gz
+          rm doxygen-1.9.7.linux.bin.tar.gz
+          echo 'export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH:' >> ~/.bashrc
+          export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH
+          doxygen -v
+
+      - name: Setup Cache
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
+
+      - name: Get organization and project name
+        run: |
+          echo "PROJECT_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        run: |
+          CXX=/usr/bin/${{matrix.compiler}} CC=/usr/bin/${{matrix.ccompiler}} cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO:BOOL=${{matrix.enable_ipo}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }} -D${{ env.PROJECT_NAME }}_ENABLE_SANITIZER_ADDRESS:BOOL=${{matrix.sanitizers}} -D${{ env.PROJECT_NAME }}_ENABLE_SANITIZER_LEAK:BOOL=${{matrix.sanitizers}} -D${{ env.PROJECT_NAME }}_ENABLE_SANITIZER_UNDEFINED:BOOL=${{matrix.sanitizers}}
+
+      - name: Build
+        if: ${{contains(matrix.generator, 'Ninja')}}
+        working-directory: ./build
+        run: |
+          ninja -v
+
+      - name: Build
+        if: ${{contains(matrix.generator, 'Makefile')}}
+        working-directory: ./build
+        run: |
+          make VERBOSE=1 -j all
+
+      - name: Benchmark Tests
+        if: ${{matrix.build_type == 'Release' && matrix.sanitizers == false}}
+        working-directory: ./build
+        run: |
+          # sudo cpupower -c all frequency-set --governor performance
+          sudo perf stat ./${{ env.PROJECT_NAME }}_benchmark
+
+      - name: Clang Test and coverage
+        if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug'}}
+        working-directory: ./build/test
+        run: |
+          ./${{ env.PROJECT_NAME }}_tests
+          llvm-profdata-16 merge -sparse default.profraw -o ${{ env.PROJECT_NAME }}_tests.profdata
+          llvm-cov-16 report ./${{ env.PROJECT_NAME }}_tests -instr-profile=${{ env.PROJECT_NAME }}_tests.profdata
+          llvm-cov-16 export ./${{ env.PROJECT_NAME }}_tests -instr-profile=${{ env.PROJECT_NAME }}_tests.profdata > coverage.json
+          llvm-cov-16 export ./${{ env.PROJECT_NAME }}_tests -instr-profile=${{ env.PROJECT_NAME }}_tests.profdata -format=lcov > coverage.lcov
+          llvm-cov-16 show ./${{ env.PROJECT_NAME }}_tests -instr-profile=${{ env.PROJECT_NAME }}_tests.profdata > coverage_show.txt
+          # Note that for a detailed report run:
+          # llvm-cov-16 show ./${{ env.PROJECT_NAME }}_tests -instr-profile=${{ env.PROJECT_NAME }}_tests.profdata
+          # More info: https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
+
+      - name: GCC Test and coverage
+        if: ${{matrix.compiler == 'g++-12' && matrix.build_type == 'Debug'}}
+        working-directory: ./build/test
+        run: |
+          ./${{ env.PROJECT_NAME }}_tests
+          gcovr -j --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov-12'
+
+      - name: Publish to codecov
+        if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug'}}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ runner.os }}
+          name: ${{ runner.os }}-coverage
+          verbose: true
+          fail_ci_if_error: true
+          files: ./build/test/coverage_show.txt
+
+      - name: Run codacy-coverage-reporter
+        if: ${{matrix.compiler == 'clang++-16' && matrix.build_type == 'Debug'}}
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./build/test/coverage.lcov
+
+      - name: CMake Tests
+        working-directory: ./build
+        run: |
+          ctest
+
+      - name: CPack
+        if: matrix.package_generator != ''
+        working-directory: ./build
+        run: |
+          cpack -C ${{matrix.build_type}} -G ${{matrix.package_generator}}
+
+      - name: Publish Tagged Release
+        uses: softprops/action-gh-release@v1
+        if:
+          ${{ startsWith(github.ref, 'refs/tags/') && matrix.package_generator
+          != '' }}
+        with:
+          files: |
+            build/*-*${{ matrix.build_type }}*-*.*
