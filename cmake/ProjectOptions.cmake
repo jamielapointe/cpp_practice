@@ -5,7 +5,7 @@ include(CheckCXXCompilerFlag)
 
 # Test if compiler supports Sanitizers
 # Parameters: <none>
-macro(modern_cpp_template_supports_sanitizers)
+macro(cpp_practice_supports_sanitizers)
   if((CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*" OR CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*") AND NOT WIN32)
     set(SUPPORTS_UBSAN ON)
   else()
@@ -21,7 +21,7 @@ endmacro()
 
 # Set up user configurable CMake options
 # Parameters: <none>
-macro(modern_cpp_template_setup_options)
+macro(cpp_practice_setup_options)
   if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
     set(DEFAULT_HARDENING ON)
     set(DEFAULT_IPO ON)
@@ -36,10 +36,10 @@ macro(modern_cpp_template_setup_options)
     set(DEFAULT_UBSAN ${SUPPORTS_UBSAN})
   endif()
 
-  option(modern_cpp_template_ENABLE_HARDENING "Enable hardening" ${DEFAULT_HARDENING})
-  option(modern_cpp_template_ENABLE_COVERAGE "Enable coverage reporting" OFF)
+  option(cpp_practice_ENABLE_HARDENING "Enable hardening" ${DEFAULT_HARDENING})
+  option(cpp_practice_ENABLE_COVERAGE "Enable coverage reporting" OFF)
 
-  modern_cpp_template_supports_sanitizers()
+  cpp_practice_supports_sanitizers()
 
   # adjust as needed; pretty sure we need 1.9.7 to get the MathJax3 and chtml support
   # not sure about an upper limit...
@@ -51,205 +51,205 @@ macro(modern_cpp_template_setup_options)
   endif()
 
   if(NOT PROJECT_IS_TOP_LEVEL)
-    option(modern_cpp_template_BUILD_DOCUMENTATION "Generate Doxygen documentation" OFF)
-    option(modern_cpp_template_ENABLE_IPO "Enable IPO/LTO" OFF)
-    option(modern_cpp_template_ENABLE_LIBPFM "Enable additional performance metrics counters by libpfm" OFF)
-    option(modern_cpp_template_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
-    option(modern_cpp_template_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
-    option(modern_cpp_template_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
-    option(modern_cpp_template_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" OFF)
-    option(modern_cpp_template_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
-    option(modern_cpp_template_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
-    option(modern_cpp_template_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
-    option(modern_cpp_template_ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
-    option(modern_cpp_template_ENABLE_CPPCHECK "Enable cpp-check analysis" OFF)
-    option(modern_cpp_template_ENABLE_PCH "Enable precompiled headers" OFF)
-    option(modern_cpp_template_ENABLE_CACHE "Enable ccache" OFF)
-    option(modern_cpp_template_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
-    option(modern_cpp_template_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
-    option(modern_cpp_template_ENABLE_INTERNAL_DEBUGGING
+    option(cpp_practice_BUILD_DOCUMENTATION "Generate Doxygen documentation" OFF)
+    option(cpp_practice_ENABLE_IPO "Enable IPO/LTO" OFF)
+    option(cpp_practice_ENABLE_LIBPFM "Enable additional performance metrics counters by libpfm" OFF)
+    option(cpp_practice_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
+    option(cpp_practice_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
+    option(cpp_practice_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
+    option(cpp_practice_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" OFF)
+    option(cpp_practice_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
+    option(cpp_practice_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
+    option(cpp_practice_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
+    option(cpp_practice_ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
+    option(cpp_practice_ENABLE_CPPCHECK "Enable cpp-check analysis" OFF)
+    option(cpp_practice_ENABLE_PCH "Enable precompiled headers" OFF)
+    option(cpp_practice_ENABLE_CACHE "Enable ccache" OFF)
+    option(cpp_practice_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
+    option(cpp_practice_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
+    option(cpp_practice_ENABLE_INTERNAL_DEBUGGING
            "Enable internal debugging - this is for testintg this project only" OFF)
-    option(modern_cpp_template_ENABLE_SIMD "Enable SIMD optimizations" OFF)
-    option(modern_cpp_template_ENABLE_DOXYGEN_WITH_CLANG "You have a version of doxygen that does supports clang" OFF)
+    option(cpp_practice_ENABLE_SIMD "Enable SIMD optimizations" OFF)
+    option(cpp_practice_ENABLE_DOXYGEN_WITH_CLANG "You have a version of doxygen that does supports clang" OFF)
     option(
-      modern_cpp_template_ENABLE_NATIVE_ARCHITECTURE
+      cpp_practice_ENABLE_NATIVE_ARCHITECTURE
       "Enable native architecture optimizations - warning may break if run on older hardware architectures or cross compiling!"
       OFF)
   else()
-    option(modern_cpp_template_BUILD_DOCUMENTATION "Generate Doxygen documentation" ${DEFAULT_DOXYGEN})
-    option(modern_cpp_template_ENABLE_IPO "Enable IPO/LTO" ${DEFAULT_IPO})
-    option(modern_cpp_template_ENABLE_LIBPFM "Enable additional performance metrics counters by libpfm" ${DEFAULT_PFM})
-    option(modern_cpp_template_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
-    option(modern_cpp_template_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ${DEFAULT_ASAN})
-    option(modern_cpp_template_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ${DEFAULT_ASAN})
-    option(modern_cpp_template_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ${DEFAULT_UBSAN})
-    option(modern_cpp_template_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
-    option(modern_cpp_template_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
-    option(modern_cpp_template_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
-    option(modern_cpp_template_ENABLE_CLANG_TIDY "Enable clang-tidy" ON)
-    option(modern_cpp_template_ENABLE_CPPCHECK "Enable cpp-check analysis" ON)
-    option(modern_cpp_template_ENABLE_PCH "Enable precompiled headers" OFF)
-    option(modern_cpp_template_ENABLE_CACHE "Enable ccache" ON)
-    option(modern_cpp_template_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
-    option(modern_cpp_template_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
-    option(modern_cpp_template_ENABLE_INTERNAL_DEBUGGING
+    option(cpp_practice_BUILD_DOCUMENTATION "Generate Doxygen documentation" ${DEFAULT_DOXYGEN})
+    option(cpp_practice_ENABLE_IPO "Enable IPO/LTO" ${DEFAULT_IPO})
+    option(cpp_practice_ENABLE_LIBPFM "Enable additional performance metrics counters by libpfm" ${DEFAULT_PFM})
+    option(cpp_practice_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
+    option(cpp_practice_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ${DEFAULT_ASAN})
+    option(cpp_practice_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ${DEFAULT_ASAN})
+    option(cpp_practice_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ${DEFAULT_UBSAN})
+    option(cpp_practice_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
+    option(cpp_practice_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
+    option(cpp_practice_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
+    option(cpp_practice_ENABLE_CLANG_TIDY "Enable clang-tidy" ON)
+    option(cpp_practice_ENABLE_CPPCHECK "Enable cpp-check analysis" ON)
+    option(cpp_practice_ENABLE_PCH "Enable precompiled headers" OFF)
+    option(cpp_practice_ENABLE_CACHE "Enable ccache" ON)
+    option(cpp_practice_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
+    option(cpp_practice_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
+    option(cpp_practice_ENABLE_INTERNAL_DEBUGGING
            "Enable internal debugging - this is for testintg this project only" ON)
-    option(modern_cpp_template_ENABLE_SIMD "Enable SIMD optimizations" OFF)
+    option(cpp_practice_ENABLE_SIMD "Enable SIMD optimizations" OFF)
     option(
-      modern_cpp_template_ENABLE_NATIVE_ARCHITECTURE
+      cpp_practice_ENABLE_NATIVE_ARCHITECTURE
       "Enable native architecture optimizations - warning may break if run on older hardware architectures or cross compiling!"
       OFF)
     option(
-      modern_cpp_template_ENABLE_DOXYGEN_WITH_CLANG
+      cpp_practice_ENABLE_DOXYGEN_WITH_CLANG
       "Enable if you have a version of doxygen that was linked with the clang 16.0+ library; this is useful for getting better parsing of C++ code"
       OFF)
   endif()
 
   if(NOT PROJECT_IS_TOP_LEVEL)
     mark_as_advanced(
-      modern_cpp_template_ENABLE_IPO
-      modern_cpp_template_ENABLE_USER_LINKER
-      modern_cpp_template_ENABLE_SANITIZER_ADDRESS
-      modern_cpp_template_ENABLE_SANITIZER_LEAK
-      modern_cpp_template_ENABLE_SANITIZER_UNDEFINED
-      modern_cpp_template_ENABLE_SANITIZER_THREAD
-      modern_cpp_template_ENABLE_SANITIZER_MEMORY
-      modern_cpp_template_ENABLE_UNITY_BUILD
-      modern_cpp_template_ENABLE_CLANG_TIDY
-      modern_cpp_template_ENABLE_CPPCHECK
-      modern_cpp_template_ENABLE_COVERAGE
-      modern_cpp_template_ENABLE_PCH
-      modern_cpp_template_ENABLE_CACHE
-      modern_cpp_template_ENABLE_SAMPLE_BASED_PROFILING
-      modern_cpp_template_ENABLE_INSTRUMENTED_PROFILING
-      modern_cpp_template_ENABLE_SIMD
-      modern_cpp_template_ENABLE_NATIVE_ARCHITECTURE
-      modern_cpp_template_ENABLE_DOXYGEN_WITH_CLANG)
+      cpp_practice_ENABLE_IPO
+      cpp_practice_ENABLE_USER_LINKER
+      cpp_practice_ENABLE_SANITIZER_ADDRESS
+      cpp_practice_ENABLE_SANITIZER_LEAK
+      cpp_practice_ENABLE_SANITIZER_UNDEFINED
+      cpp_practice_ENABLE_SANITIZER_THREAD
+      cpp_practice_ENABLE_SANITIZER_MEMORY
+      cpp_practice_ENABLE_UNITY_BUILD
+      cpp_practice_ENABLE_CLANG_TIDY
+      cpp_practice_ENABLE_CPPCHECK
+      cpp_practice_ENABLE_COVERAGE
+      cpp_practice_ENABLE_PCH
+      cpp_practice_ENABLE_CACHE
+      cpp_practice_ENABLE_SAMPLE_BASED_PROFILING
+      cpp_practice_ENABLE_INSTRUMENTED_PROFILING
+      cpp_practice_ENABLE_SIMD
+      cpp_practice_ENABLE_NATIVE_ARCHITECTURE
+      cpp_practice_ENABLE_DOXYGEN_WITH_CLANG)
   endif()
 
-  modern_cpp_template_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
-  if(LIBFUZZER_SUPPORTED AND (modern_cpp_template_ENABLE_SANITIZER_ADDRESS
-                              OR modern_cpp_template_ENABLE_SANITIZER_UNDEFINED))
+  cpp_practice_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
+  if(LIBFUZZER_SUPPORTED AND (cpp_practice_ENABLE_SANITIZER_ADDRESS
+                              OR cpp_practice_ENABLE_SANITIZER_UNDEFINED))
     set(DEFAULT_FUZZER ON)
   else()
     set(DEFAULT_FUZZER OFF)
   endif()
 
-  option(modern_cpp_template_BUILD_FUZZ_TESTS "Enable fuzz testing executable" ${DEFAULT_FUZZER})
+  option(cpp_practice_BUILD_FUZZ_TESTS "Enable fuzz testing executable" ${DEFAULT_FUZZER})
 
 endmacro()
 
-# Setup the global options - effects modern_cpp_template targets as well as third party
+# Setup the global options - effects cpp_practice targets as well as third party
 # dependencies
-macro(modern_cpp_template_global_options)
-  if(modern_cpp_template_ENABLE_IPO)
+macro(cpp_practice_global_options)
+  if(cpp_practice_ENABLE_IPO)
     include(InterproceduralOptimization)
-    modern_cpp_template_enable_ipo()
+    cpp_practice_enable_ipo()
   endif()
 
   include(Profiling)
-  if(modern_cpp_template_ENABLE_SAMPLE_BASED_PROFILING)
-    modern_cpp_template_enable_sample_based_profiling()
+  if(cpp_practice_ENABLE_SAMPLE_BASED_PROFILING)
+    cpp_practice_enable_sample_based_profiling()
   endif()
-  if(modern_cpp_template_ENABLE_INSTRUMENTED_PROFILING)
-    modern_cpp_template_enable_instrumented_profiling()
+  if(cpp_practice_ENABLE_INSTRUMENTED_PROFILING)
+    cpp_practice_enable_instrumented_profiling()
   endif()
 
-  modern_cpp_template_supports_sanitizers()
+  cpp_practice_supports_sanitizers()
 endmacro()
 
-# Setup the local options - only affects modern_cpp_template targets
-macro(modern_cpp_template_local_options)
+# Setup the local options - only affects cpp_practice targets
+macro(cpp_practice_local_options)
   # setup the fake targets that store the common compiler settings
-  add_library(modern_cpp_template_warnings INTERFACE)
-  add_library(modern_cpp_template::modern_cpp_template_warnings ALIAS modern_cpp_template_warnings)
+  add_library(cpp_practice_warnings INTERFACE)
+  add_library(cpp_practice::cpp_practice_warnings ALIAS cpp_practice_warnings)
 
-  add_library(modern_cpp_template_options INTERFACE)
-  add_library(modern_cpp_template::modern_cpp_template_options ALIAS modern_cpp_template_options)
-  target_compile_features(modern_cpp_template_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+  add_library(cpp_practice_options INTERFACE)
+  add_library(cpp_practice::cpp_practice_options ALIAS cpp_practice_options)
+  target_compile_features(cpp_practice_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
   if(PROJECT_IS_TOP_LEVEL)
     include(CompilerSettings)
   endif()
 
   include(CompilerWarnings)
-  modern_cpp_template_set_project_warnings(modern_cpp_template_warnings)
+  cpp_practice_set_project_warnings(cpp_practice_warnings)
 
-  if(modern_cpp_template_ENABLE_USER_LINKER)
+  if(cpp_practice_ENABLE_USER_LINKER)
     include(Linker)
-    configure_linker(modern_cpp_template_options)
+    configure_linker(cpp_practice_options)
   endif()
 
   include(Sanitizers)
-  modern_cpp_template_enable_sanitizers(
-    modern_cpp_template_options
-    ${modern_cpp_template_ENABLE_SANITIZER_ADDRESS}
-    ${modern_cpp_template_ENABLE_SANITIZER_LEAK}
-    ${modern_cpp_template_ENABLE_SANITIZER_UNDEFINED}
-    ${modern_cpp_template_ENABLE_SANITIZER_THREAD}
-    ${modern_cpp_template_ENABLE_SANITIZER_MEMORY})
+  cpp_practice_enable_sanitizers(
+    cpp_practice_options
+    ${cpp_practice_ENABLE_SANITIZER_ADDRESS}
+    ${cpp_practice_ENABLE_SANITIZER_LEAK}
+    ${cpp_practice_ENABLE_SANITIZER_UNDEFINED}
+    ${cpp_practice_ENABLE_SANITIZER_THREAD}
+    ${cpp_practice_ENABLE_SANITIZER_MEMORY})
 
-  if(modern_cpp_template_ENABLE_LIBPFM)
+  if(cpp_practice_ENABLE_LIBPFM)
     find_package(PFM)
     if(HAVE_PFM)
-      target_link_libraries(modern_cpp_template_options PRIVATE pfm)
+      target_link_libraries(cpp_practice_options PRIVATE pfm)
     endif()
   endif()
 
-  set_target_properties(modern_cpp_template_options PROPERTIES UNITY_BUILD ${modern_cpp_template_ENABLE_UNITY_BUILD})
+  set_target_properties(cpp_practice_options PROPERTIES UNITY_BUILD ${cpp_practice_ENABLE_UNITY_BUILD})
 
-  if(modern_cpp_template_ENABLE_PCH)
+  if(cpp_practice_ENABLE_PCH)
     target_precompile_headers(
-      modern_cpp_template_options
+      cpp_practice_options
       INTERFACE
       <vector>
       <string>
       <utility>)
   endif()
 
-  if(modern_cpp_template_ENABLE_CACHE)
+  if(cpp_practice_ENABLE_CACHE)
     include(CCache)
-    modern_cpp_template_enable_cache()
+    cpp_practice_enable_cache()
   endif()
 
   include(StaticAnalyzers)
-  if(modern_cpp_template_ENABLE_CLANG_TIDY)
-    modern_cpp_template_enable_clang_tidy(modern_cpp_template_options)
+  if(cpp_practice_ENABLE_CLANG_TIDY)
+    cpp_practice_enable_clang_tidy(cpp_practice_options)
   endif()
 
-  if(modern_cpp_template_ENABLE_CPPCHECK)
+  if(cpp_practice_ENABLE_CPPCHECK)
     # Use Default CPPCHECK settings
     # otherwise pass in string of your own settings
-    modern_cpp_template_enable_cppcheck("")
+    cpp_practice_enable_cppcheck("")
   endif()
 
-  if(modern_cpp_template_ENABLE_COVERAGE)
-    modern_cpp_template_enable_coverage(modern_cpp_template_options)
+  if(cpp_practice_ENABLE_COVERAGE)
+    cpp_practice_enable_coverage(cpp_practice_options)
   endif()
 
-  if(modern_cpp_template_BUILD_DOCUMENTATION)
+  if(cpp_practice_BUILD_DOCUMENTATION)
     include(Doxygen)
-    modern_cpp_template_enable_doxygen("")
+    cpp_practice_enable_doxygen("")
   endif()
 
   check_cxx_compiler_flag("-Wl,--fatal-warnings" LINKER_FATAL_WARNINGS)
   if(LINKER_FATAL_WARNINGS)
     # This is not working consistently, so disabling for now
-    # target_link_options(modern_cpp_template_options INTERFACE -Wl,--fatal-warnings)
+    # target_link_options(cpp_practice_options INTERFACE -Wl,--fatal-warnings)
   endif()
 
-  if(modern_cpp_template_ENABLE_HARDENING)
+  if(cpp_practice_ENABLE_HARDENING)
     include(Hardening)
     if(NOT SUPPORTS_UBSAN
-       OR modern_cpp_template_ENABLE_SANITIZER_UNDEFINED
-       OR modern_cpp_template_ENABLE_SANITIZER_ADDRESS
-       OR modern_cpp_template_ENABLE_SANITIZER_THREAD
-       OR modern_cpp_template_ENABLE_SANITIZER_LEAK)
+       OR cpp_practice_ENABLE_SANITIZER_UNDEFINED
+       OR cpp_practice_ENABLE_SANITIZER_ADDRESS
+       OR cpp_practice_ENABLE_SANITIZER_THREAD
+       OR cpp_practice_ENABLE_SANITIZER_LEAK)
       set(ENABLE_UBSAN_MINIMAL_RUNTIME FALSE)
     else()
       set(ENABLE_UBSAN_MINIMAL_RUNTIME TRUE)
     endif()
-    modern_cpp_template_enable_hardening(modern_cpp_template_options ${ENABLE_UBSAN_MINIMAL_RUNTIME})
+    cpp_practice_enable_hardening(cpp_practice_options ${ENABLE_UBSAN_MINIMAL_RUNTIME})
   endif()
 
 endmacro()

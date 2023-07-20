@@ -1,1 +1,1 @@
-add_subdirectory(modern_cpp_template)
+add_subdirectory(cpp_practice)

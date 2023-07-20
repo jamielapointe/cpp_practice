@@ -3,7 +3,7 @@ include(CPM)
 # Done as a function so that updates to variables like
 # CMAKE_CXX_FLAGS don't propagate out to other
 # targets
-function(modern_cpp_template_setup_dependencies)
+function(cpp_practice_setup_dependencies)
 
   # This sets this variable for this scope only
   set(CMAKE_BUILD_TYPE Release)
@@ -68,11 +68,11 @@ function(modern_cpp_template_setup_dependencies)
       1.8.0
       OPTIONS
       "BENCHMARK_ENABLE_TESTING OFF"
-      "BENCHMARK_ENABLE_LIBPFM ${modern_cpp_template_ENABLE_LIBPFM}")
+      "BENCHMARK_ENABLE_LIBPFM ${cpp_practice_ENABLE_LIBPFM}")
 
-    if(CMAKE_BUILD_TYPE STREQUAL "Release" AND modern_cpp_template_ENABLE_SIMD)
+    if(CMAKE_BUILD_TYPE STREQUAL "Release" AND cpp_practice_ENABLE_SIMD)
       set_target_properties(benchmark PROPERTIES COMPILE_FLAGS -ffast-math)
-      if(modern_cpp_template_ENABLE_NATIVE_ARCHITECTURE)
+      if(cpp_practice_ENABLE_NATIVE_ARCHITECTURE)
         set_target_properties(benchmark PROPERTIES COMPILE_FLAGS -march=native)
       endif()
     endif()

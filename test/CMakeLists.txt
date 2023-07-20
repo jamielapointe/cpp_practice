@@ -7,9 +7,9 @@ project(CmakeConfigPackageTests LANGUAGES CXX)
 if(PROJECT_IS_TOP_LEVEL OR TEST_INSTALLED_VERSION)
   enable_testing()
 
-  find_package(modern_cpp_template CONFIG REQUIRED) # for intro, project_options, ...
+  find_package(cpp_practice CONFIG REQUIRED) # for intro, project_options, ...
 
-  if(NOT TARGET modern_cpp_template_options)
+  if(NOT TARGET cpp_practice_options)
     message(FATAL_ERROR "Required config package not found!")
     return() # be strictly paranoid for Template Janitor github action! CK
   endif()
@@ -18,19 +18,19 @@ endif()
 # ---- Dependencies ----
 
 add_executable(
-  modern_cpp_template_tests
+  cpp_practice_tests
   test_binary_exponentiation.cpp
   test_breadth_first_search_unordered.cpp
   test_factorial.cpp
   test_fibonacci.cpp
   test_main.cpp)
 target_include_directories(
-  modern_cpp_template_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${modern_cpp_template_ROOT}/include
-                                    ${modern_cpp_template_BUILD_ROOT}/configured_files/include)
-target_link_libraries(modern_cpp_template_tests PRIVATE modern_cpp_template::modern_cpp_template_options
-                                                        modern_cpp_template::modern_cpp_template_warnings)
+  cpp_practice_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${cpp_practice_ROOT}/include
+                                    ${cpp_practice_BUILD_ROOT}/configured_files/include)
+target_link_libraries(cpp_practice_tests PRIVATE cpp_practice::cpp_practice_options
+                                                        cpp_practice::cpp_practice_warnings)
 target_link_system_libraries(
-  modern_cpp_template_tests
+  cpp_practice_tests
   PRIVATE
   GTest::gtest_main
   fmt::fmt
@@ -38,4 +38,4 @@ target_link_system_libraries(
   Microsoft.GSL::GSL)
 
 include(GoogleTest)
-gtest_discover_tests(modern_cpp_template_tests XML_OUTPUT_DIR ${CMAKE_BINARY_DIR})
+gtest_discover_tests(cpp_practice_tests XML_OUTPUT_DIR ${CMAKE_BINARY_DIR})

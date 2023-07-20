@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <modern_cpp_template/factorial.h>
+#include <cpp_practice/factorial.h>
 
-using modern_cpp_template::algorithms::factorial;
+using cpp_practice::algorithms::factorial;
 
 TEST(FactorialTest, Basic00) {
   ASSERT_EQ(factorial(0), 1);

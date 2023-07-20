@@ -20,17 +20,17 @@ The list of contributors to the project:
             alt="jlapointe"
           /><br /><sub><b>jlapointe</b></sub></a
         ><br /><a
-          href="https://github.com/Jamie LaPointe/modern_cpp_template/issues?q=author%3Ajlapointe"
+          href="https://github.com/Jamie LaPointe/cpp_practice/issues?q=author%3Ajlapointe"
           title="Bug reports"
           >🐛</a
         >
         <a
-          href="https://github.com/Jamie LaPointe/modern_cpp_template/commits?author=jlapointe"
+          href="https://github.com/Jamie LaPointe/cpp_practice/commits?author=jlapointe"
           title="Code"
           >💻</a
         >
         <a
-          href="https://github.com/Jamie LaPointe/modern_cpp_template/commits?author=jlapointe"
+          href="https://github.com/Jamie LaPointe/cpp_practice/commits?author=jlapointe"
           title="Documentation"
           >📖</a
         >
@@ -52,6 +52,6 @@ The list of contributors to the project:
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 [github pull requests]:
-  https://github.com/jamielapointe/modern_cpp_template/pulls
-[github issues]: https://github.com/jamielapointe/modern_cpp_template/issues
+  https://github.com/jamielapointe/cpp_practice/pulls
+[github issues]: https://github.com/jamielapointe/cpp_practice/issues
 [gitter]: https://gitter.im/jl-modern-cpp-template/Lobby

@@ -2,7 +2,7 @@
 # Parameters:
 #   CPPCHECK_OPTIONS [in] - Optionally override CPPCHECK options; pass in empty
 #                           string to stick with default settings
-macro(modern_cpp_template_enable_cppcheck CPPCHECK_OPTIONS)
+macro(cpp_practice_enable_cppcheck CPPCHECK_OPTIONS)
   find_program(CPPCHECK cppcheck)
   if(CPPCHECK)
 
@@ -51,7 +51,7 @@ endmacro()
 
 # Enable clang-tidy static analysis checking during build time
 # Parameters: <none>
-macro(modern_cpp_template_enable_clang_tidy target)
+macro(cpp_practice_enable_clang_tidy target)
 
   find_program(
     CLANGTIDY
@@ -87,7 +87,7 @@ macro(modern_cpp_template_enable_clang_tidy target)
         -extra-arg=-Wno-unused-command-line-argument
         "-line-filter=[{'name':'macros.h','lines':[[999999,999999]]}]"
         -p
-        ${modern_cpp_template_BUILD_ROOT})
+        ${cpp_practice_BUILD_ROOT})
 
     message("Also setting clang-tidy globally")
     set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_OPTIONS})
@@ -97,7 +97,7 @@ macro(modern_cpp_template_enable_clang_tidy target)
 endmacro()
 
 # Enable the include what use use check
-macro(modern_cpp_template_enable_include_what_you_use)
+macro(cpp_practice_enable_include_what_you_use)
   find_program(INCLUDE_WHAT_YOU_USE include-what-you-use)
   if(INCLUDE_WHAT_YOU_USE)
     set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${INCLUDE_WHAT_YOU_USE})

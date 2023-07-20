@@ -1,4 +1,4 @@
-# Install modern_cpp_template
+# Install cpp_practice
 
 List instructions for the many options to either build from source or install
-prebuilt binaries for modern_cpp_template.
+prebuilt binaries for cpp_practice.

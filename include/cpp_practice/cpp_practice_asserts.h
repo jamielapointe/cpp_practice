@@ -1,4 +1,4 @@
-///\file modern_cpp_template_asserts.h
+///\file cpp_practice_asserts.h
 ///\author Jamie LaPointe (jamie.lapointe@gmail.com)
 ///\brief Provide some project level asserts
 /// these asserts can be can be configured at compiled for certain behaviours
@@ -22,9 +22,9 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "modern_cpp_template/system_constants.h"
+#include "cpp_practice/system_constants.h"
 
-namespace modern_cpp_template::internal {
+namespace cpp_practice::internal {
 
 inline void print_error(char const* const expression, char const* const file,
                         uint32_t line, char const* const function,
@@ -98,9 +98,9 @@ inline void _internal_assert_handler(char const* const expression,
                                      char const* const file, uint32_t line,
                                      char const* const function,
                                      char const* const message) {
-  if constexpr (modern_cpp_template::options::kEnableInternalDebugging) {
+  if constexpr (cpp_practice::options::kEnableInternalDebugging) {
     _assert_handler(expression, file, line, function, message);
   }
 }
 
-}  // namespace modern_cpp_template::internal
+}  // namespace cpp_practice::internal

@@ -1,99 +1,84 @@
-# modern_cpp_template: A CMake based template for C++20 development
+# cpp_practice
 
 [![CI Actions Status][ci-badge]][ci]
 [![CodeQL Actions Status][codeql-badge]][codeql]
 [![Code Coverage][codecov-badge]][codecov]
 [![Codacy Badge][codacy-badge]][codacy]
 
-[![Gitter chat][gitter-badge]][gitter]
-[![Latest GitHub release][releases-badge]][github releases]
-
+<!-- [![Latest GitHub release][releases-badge]][github releases] -->
+<!-- [![Gitter chat][gitter-badge]][gitter] -->
 <!-- [![Conan.io][conan-badge]][conan-link] -->
-
-modern_cpp_template is a CMake based template for getting up and running with
-modern C++ quickly.
-
+ 
 ## Table of Contents
 
-- [modern\_cpp\_template: A CMake based template for C++20 development](#modern_cpp_template-a-cmake-based-template-for-c20-development)
+- [cpp_practice](#cpp_practice)
   - [Table of Contents](#table-of-contents)
-  - [Background](#background)
-    - [Introduction](#introduction)
-  - [Getting Started](#getting-started)
-    - [Use the Github template](#use-the-github-template)
+  - [About cpp_practice](#about-cpp_practice)
+  - [Technologies Used](#technologies-used)
   - [Dependencies](#dependencies)
     - [Docker](#docker)
       - [Necessary Dependencies](#necessary-dependencies)
       - [Optional Dependencies](#optional-dependencies)
         - [C++ Tools](#c-tools)
-  - [Build Instructions](#build-instructions)
+  - [Setup/Installation Requirements](#setupinstallation-requirements)
     - [Specify the compiler using environment variables](#specify-the-compiler-using-environment-variables)
       - [Commands for setting the compilers](#commands-for-setting-the-compilers)
     - [Configure your build](#configure-your-build)
       - [Running the tests](#running-the-tests)
   - [Docker Instructions](#docker-instructions)
+  - [Known Bugs](#known-bugs)
   - [Contribute](#contribute)
   - [License](#license)
 
-## Background
+## About cpp_practice
 
-### Introduction
+Practice C++ 20
 
-This is a fork of [cpp-best-practices/cmake_template][] mostly to be used for my
-own personal projects.
+## Technologies Used
 
-This template project uses C++20 and currently supports recent compilers:
+- _List all_
+- _the major technologies_
+- _you used in your project_
+- _here_
 
-- gcc 12
-- LLVM/clang 16
+Current list:
 
-Other requirements:
-
-- cmake >= 3.25
-
-This has only been tested on Ubuntu 22.04, though it should work on any desktop
-OS with a recent compiler supporting C++ 20.
-
-Optional dependencies:
-
-- doxygen >= 1.9.7
-- ccache >= 4.5.1
-- cppcheck >= 2.7
-- pfm (performance monitoring events library) >= 4.11.1
-
-This template:
-
-- Aggressively sets compiler warnings and sets warnings as errors
-- Utilizes clang-format, clang-tidy, & cppcheck
-  - [Google C++ styleguide][]
-  - [C++ Core Guidelines][]
-  - [SEI CERT C++ Coding Standard][]
-- Enables Address, Undefined Behavior, and Leak sanitizers whenever possible
-- Utilizes [CPM][] for dependency management in CMake
-- Utilizes [Google Test][] and [Google Benchmark][]
-- Utilizes [fmt][] for formatted printing
-- Utilizes [spdlog][] for logging
-- Utilizes [GSL: Guidelines Support Library][] for helping to adhere to the
-  - [C++ Core Guidelines][]
-- Utilizes [Abseil][] helping to adhere to the [Google C++ styleguide][]
-- Utilizes [CLI11][] command line utility
-- Runs code coverage over the unit tests
-- Provides a simple [CLI11][] example
-- Locally we utilize [pre-commit][] to helping ensure adherence to a common
-  styleguide as mentioned in the [contributing](./.github/CONTRIBUTING.md)
-  notes.
-- Makes use of [clang-format][], [clang-tidy][], [cppcheck][], [codeql][], and
-  [codacy][].
-
-## Getting Started
-
-### Use the Github template
-
-First follow the instructions for generating a project from a template (there
-are multiple options) from [using a github template][].
-
-After creating the project please wait until the cleanup workflow has finished
-setting up your project and committed the changes.
+- C++ 20
+- Third Party Tools:
+  - [CPM][]
+    - CMake package management
+  - [fmt][]
+    - Formatted printing
+  - [spdlog][]
+    - Logging
+  - [CLI11][]
+    - Command line interface and argument parser
+  - [GSL: Guidelines Support Library][]
+    - Helping adhere to the [C++ Core Guidelines]
+  - [Abseil][]
+    - Helping to adhere to the [Google C++ styleguide][]
+- Tools to help enhance the quality of the code:
+  - [Google Test][]
+    - Unit testing
+  - [Google Benchmark][]
+    - Micro-benchmarking runtime performance
+  - [pre-commit][]
+    - Helping ensure adherence to a common styleguide for other text based (non
+      C++)
+  - [clang-format][]
+    - Helping ensure adherence to a common C++ styleguide
+  - [clang-tidy][]
+    - Static analyzer to help to enforce coding standards such as
+      - [SEI CERT C++ Coding Standard][]
+      - [Google C++ styleguide][]
+      - [C++ Core Guidelines][]
+  - [cppcheck][]
+    - Additional static analyzer
+  - [codeql][]
+    - Additional static analyzer to help ensure secure code
+  - [codacy][]
+    - Additional static analyzer to help ensure secure code and monitor test
+      code coverage
 
 ## Dependencies
 
@@ -202,16 +187,19 @@ We have a Docker image that's already set up for you. See the
   - Optimize usage of `#include` C & C++ instructions
   - Follow instructions here: [install: include what you use][]
 
-## Build Instructions
+## Setup/Installation Requirements
 
-A full build has different steps:
+- _This is a great place_
+- _to list setup instructions_
+- _in a simple_
+- _easy-to-understand_
+- _format_
 
-1. Specifying the compiler using environment variables
-2. Configuring the project
-3. Building the project
-
-For the subsequent builds, in case you change the source code, you only need to
-repeat the last step.
+- _This is a great place_
+- _to list setup instructions_
+- _in a simple_
+- _easy-to-understand_
+- _format_
 
 ### Specify the compiler using environment variables
 
@@ -261,8 +249,7 @@ variables.
 ### Configure your build
 
 To configure the project, you could use `cmake`, or `ccmake` or `cmake-gui`. It
-is assumed the user knows how to build software. If not, then there are many
-great resource online.
+is assumed the user knows how to build software.
 
 #### Running the tests
 
@@ -274,6 +261,12 @@ ctest -C Debug
 cd ../
 ```
 
+- _Provide any additional details_
+- _concerning testing your project_
+- _or other special build options_
+- _such as building documentation,_
+- _etc._
+
 ## Docker Instructions
 
 If you have [Docker][] installed, you can run this in your terminal, when the
@@ -284,47 +277,47 @@ docker build -f ./.devcontainer/Dockerfile --tag=my_project:latest .
 docker run -it my_project:latest
 ```
 
+- _Provide additional instructions_
+- _for building the docker project_
+- _and definitely modify the dockerfile_
+- _for your specific project_
+
+## Known Bugs
+
+- _Any known issues_
+- _should go here_
+
 ## Contribute
 
-To contribute, open an [issue][github issues] or [pull
-request][github pull requests] on GitHub, or ask a question on [gitter][]. There
-is also a short note to contributors [here](./.github/CONTRIBUTING.md).
-
-The list of contributors to the project can be found
-[here](./.github/CONTRIBUTORS.md).
+- _If your project allows third_
+- _party contributors, then list_
+- _the rules and instructions here_
+- _with a links to_
+  - _CONTRIBUTING.md which contains rules & instructors for contributors_
+  - _CONTRIBUTORS.md which is an autogenerated list of contributors from a tool
+    like all-contributor_
 
 ## License
 
-This template is available as free and unencumbered software into the pubic
-domain. See the [LICENSE](./LICENSE) file for details.
+- _List which license you are utilizing_
+- _for your project_
+- _provide a link to the LICENSE.md_
+- _file for your project_
 
-This project follows the [all-contributors][] specification. Contributions of
-any kind welcome!
-
-[cpp-best-practices/cmake_template]:
-  https://github.com/cpp-best-practices/cmake_template
 [ci-badge]:
-  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/ci.yml/badge.svg
-[ci]:
-  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/ci.yml
+  https://github.com/jamielapointe/cpp_practice/actions/workflows/ci.yml/badge.svg
+[ci]: https://github.com/jamielapointe/cpp_practice/actions/workflows/ci.yml
 [codecov-badge]:
-  https://codecov.io/gh/jamielapointe/modern_cpp_template/branch/main/graph/badge.svg?token=6REP7VM7DP
-[codecov]: https://codecov.io/gh/jamielapointe/modern_cpp_template
+  https://codecov.io/gh/jamielapointe/cpp_practice/branch/main/graph/badge.svg?token=6REP7VM7DP
+[codecov]: https://codecov.io/gh/jamielapointe/cpp_practice
 [codeql-badge]:
-  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/codeql_analysis.yml/badge.svg
+  https://github.com/jamielapointe/cpp_practice/actions/workflows/codeql_analysis.yml/badge.svg
 [codeql]:
-  https://github.com/jamielapointe/modern_cpp_template/actions/workflows/codeql_analysis.yml
+  https://github.com/jamielapointe/cpp_practice/actions/workflows/codeql_analysis.yml
 [codacy-badge]:
   https://app.codacy.com/project/badge/Grade/a709a287b12249c3a4a57165f3306411
 [codacy]:
-  https://app.codacy.com/gh/jamielapointe/modern_cpp_template/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
-[github issues]: https://github.com/jamielapointe/modern_cpp_template/issues
-[github pull requests]:
-  https://github.com/jamielapointe/modern_cpp_template/pulls
-[github releases]: ps://github.com/jamielapointe/modern_cpp_template/releases
-[releases-badge]: https://img.shields.io/badge/myproject-v0.0.0-blue
-[gitter-badge]: https://badges.gitter.im/jl-modern-cpp-template/Lobby.svg
-[gitter]: https://gitter.im/jl-modern-cpp-template/Lobby
+  https://app.codacy.com/gh/jamielapointe/cpp_practice/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
 [Google C++ styleguide]: https://google.github.io/styleguide/cppguide.html
 [C++ Core Guidelines]:
   https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
@@ -342,9 +335,6 @@ any kind welcome!
 [clang-tidy]: https://clang.llvm.org/extra/clang-tidy/
 [cppcheck]: https://cppcheck.sourceforge.io/
 [pre-commit]: https://pre-commit.com/
-[using a github template]:
-  https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template
-[C++ Reference]: https://en.cppreference.com/w/cpp/compiler_support
 [CMake 3.25+]: https://cmake.org/
 [Doxygen]: http://doxygen.nl/
 [ccache]: https://ccache.dev
@@ -352,9 +342,19 @@ any kind welcome!
 [install: include what you use]:
   https://github.com/include-what-you-use/include-what-you-use#how-to-install
 [Docker]: https://www.docker.com/
-[all-contributors]: https://github.com/all-contributors/all-contributors
 [ninja]: https://ninja-build.org/
 [libpfm-4]: https://github.com/wcohen/libpfm4
+[C++ Reference]: https://en.cppreference.com/w/cpp/compiler_support
 
+<!-- Create conan package manager and add these badges to our project -->
 <!-- [conan-badge]: https://img.shields.io/badge/conan-io-blue -->
-<!-- [conan-link]: https://conan.io/center/myproject -->
+<!-- [conan-link]: https://conan.io/center/cpp_practice -->
+
+<!-- If you have a glitter lobby, then add the proper links to your project's -->
+<!-- lobby below -->
+<!-- [gitter-badge]: https://badges.gitter.im/jl-modern-cpp-template/Lobby.svg -->
+<!-- [gitter]: https://gitter.im/jl-modern-cpp-template/Lobby -->
+
+<!-- Add a badge for the latest release of your software -->
+<!-- [releases-badge]: https://img.shields.io/badge/cpp_practice-v0.0.0-blue -->
+<!-- [github releases]: ps://github.com/jamielapointe/cpp_practice/releases -->

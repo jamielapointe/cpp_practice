@@ -16,10 +16,10 @@
 #include <utility>
 #include <variant>
 
-#include "modern_cpp_template/binary_exponentiation.h"
-#include "modern_cpp_template/macros.h"
+#include "cpp_practice/binary_exponentiation.h"
+#include "cpp_practice/macros.h"
 
-namespace modern_cpp_template::algorithms {
+namespace cpp_practice::algorithms {
 
 namespace internal {
 
@@ -65,17 +65,17 @@ class Simple_Fibonacci_Matrix_2_2 {
     if (list.begin() != list.end()) {
       list_size = list.begin()->size();
     }
-    modern_cpp_template_assert_message(
+    cpp_practice_assert_message(
         list.size() == static_cast<size_t>(kNumRows),
         "The first dimension of list does not contain the proper "
         "number of rows");
-    modern_cpp_template_assert_message(
+    cpp_practice_assert_message(
         list_size == static_cast<size_t>(kNumCols),
         "The second dimension of list does not contain "
         "the proper number of columns");
     Index row_index{0};
     for (auto const &row : list) {
-      modern_cpp_template_assert(list_size == row.size());
+      cpp_practice_assert(list_size == row.size());
       Index col_index{0};
       for (auto const &list_val : row) {
         coeff(row_index, col_index) = list_val;
@@ -134,7 +134,7 @@ class Simple_Fibonacci_Matrix_2_2 {
   ///\param col The col into the 2D matrix
   ///\return Tp value of the Matrix cell at row,col index
   Tp coeff(Index row, Index col) const {
-    modern_cpp_template_internal_assert(row >= 0 && row < rows() && col >= 0 &&
+    cpp_practice_internal_assert(row >= 0 && row < rows() && col >= 0 &&
                                         col < cols());
     return matrix_data()[static_cast<size_t>(row)][static_cast<size_t>(col)];
   }
@@ -145,7 +145,7 @@ class Simple_Fibonacci_Matrix_2_2 {
   ///\param col The col into the 2D matrix
   ///\return Tp value of the Matrix cell at row,col index
   Tp operator()(Index row, Index col) const {
-    modern_cpp_template_assert(row >= 0 && row < rows() && col >= 0 &&
+    cpp_practice_assert(row >= 0 && row < rows() && col >= 0 &&
                                col < cols());
     return coeff(row, col);
   }
@@ -156,7 +156,7 @@ class Simple_Fibonacci_Matrix_2_2 {
   ///\param col The col into the 2D matrix
   ///\return Tp& reference the Matrix cell at row,col index
   Tp &coeff(Index row, Index col) {
-    modern_cpp_template_internal_assert(row >= 0 && row < rows() && col >= 0 &&
+    cpp_practice_internal_assert(row >= 0 && row < rows() && col >= 0 &&
                                         col < cols());
     return matrix_data()[static_cast<size_t>(row)][static_cast<size_t>(col)];
   }
@@ -167,7 +167,7 @@ class Simple_Fibonacci_Matrix_2_2 {
   ///\param col The col into the 2D matrix
   ///\return Tp& reference the Matrix cell at row,col index
   Tp &operator()(Index row, Index col) {
-    modern_cpp_template_assert(row >= 0 && row < rows() && col >= 0 &&
+    cpp_practice_assert(row >= 0 && row < rows() && col >= 0 &&
                                col < cols());
     return coeff(row, col);
   }
@@ -177,7 +177,7 @@ class Simple_Fibonacci_Matrix_2_2 {
   ///\param index The 1D index into the matrix
   ///\return Tp value of the Matrix cell at index
   Tp coeff(Index index) const {
-    modern_cpp_template_internal_assert(index >= 0 && index < size());
+    cpp_practice_internal_assert(index >= 0 && index < size());
     return array_data()[index];
   }
 
@@ -186,7 +186,7 @@ class Simple_Fibonacci_Matrix_2_2 {
   ///\param index The 1D index into the matrix
   ///\return Tp value of the Matrix cell at index
   Tp operator()(Index index) const {
-    modern_cpp_template_assert(index >= 0 && index < size());
+    cpp_practice_assert(index >= 0 && index < size());
     return coeff(index);
   }
 
@@ -195,7 +195,7 @@ class Simple_Fibonacci_Matrix_2_2 {
   ///\param index The 1D index into the matrix
   ///\return Tp& reference the Matrix cell at index
   Tp &coeff(Index index) {
-    modern_cpp_template_internal_assert(index >= 0 && index < size());
+    cpp_practice_internal_assert(index >= 0 && index < size());
     return array_data()[index];
   }
 
@@ -204,7 +204,7 @@ class Simple_Fibonacci_Matrix_2_2 {
   ///\param index The 1D index into the matrix
   ///\return Tp& reference the Matrix cell at index
   Tp &operator()(Index index) {
-    modern_cpp_template_assert(index >= 0 && index < size());
+    cpp_practice_assert(index >= 0 && index < size());
     return coeff(index);
   }
 
@@ -257,7 +257,7 @@ class Simple_Fibonacci_Matrix_2_2 {
 /// F_{n+1}\f$ pair of Fibonacci numbers
 inline int64_t fibonacci_fast1_internal(int64_t number) noexcept {
   Simple_Fibonacci_Matrix_2_2<int64_t> base{{1, 1}, {1, 0}};
-  return modern_cpp_template::algorithms::matrix_exponentiation(base, number)(
+  return cpp_practice::algorithms::matrix_exponentiation(base, number)(
       0, 1);
 }
 
@@ -294,7 +294,7 @@ inline constexpr std::pair<int64_t, int64_t> fibonacci_fast2_internal(
 /// the proper fibonacci series
 inline constexpr int64_t fibonacci(int64_t number) {
   if (number <= 1) return number;
-  modern_cpp_template_assert_message(
+  cpp_practice_assert_message(
       number <= internal::kMaxFibonacciNumber,
       "number will cause a signed integer overflow");
 
@@ -319,7 +319,7 @@ inline constexpr int64_t fibonacci(int64_t number) {
 ///\return constexpr the \f$F_n\f$ Fibonacci number
 inline constexpr int64_t fibonacci_fast1(int64_t number) noexcept {
   if (number <= 1) return number;
-  modern_cpp_template_assert_message(
+  cpp_practice_assert_message(
       number <= internal::kMaxFibonacciFast1Number,
       "number will cause a signed integer overflow");
 
@@ -336,11 +336,11 @@ inline constexpr int64_t fibonacci_fast1(int64_t number) noexcept {
 ///\return constexpr the \f$F_n\f$ Fibonacci number
 inline constexpr int64_t fibonacci_fast2(int64_t number) noexcept {
   if (number <= 1) return number;
-  modern_cpp_template_assert_message(
+  cpp_practice_assert_message(
       number <= internal::kMaxFibonacciFast2Number,
       "number will cause a signed integer overflow");
 
   return internal::fibonacci_fast2_internal(number - 1).second;
 }
 
-}  // namespace modern_cpp_template::algorithms
+}  // namespace cpp_practice::algorithms

@@ -1,10 +1,10 @@
 #include <benchmark/benchmark.h>
 
-#include "modern_cpp_template/fibonacci.h"
+#include "cpp_practice/fibonacci.h"
 
-using modern_cpp_template::algorithms::fibonacci;
-using modern_cpp_template::algorithms::fibonacci_fast1;
-using modern_cpp_template::algorithms::fibonacci_fast2;
+using cpp_practice::algorithms::fibonacci;
+using cpp_practice::algorithms::fibonacci_fast1;
+using cpp_practice::algorithms::fibonacci_fast2;
 
 static void BM_fibonacci(benchmark::State& state) {
   for (auto _ : state) {

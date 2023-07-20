@@ -1,5 +1,5 @@
 # Enable ccache if available
-function(modern_cpp_template_enable_cache)
+function(cpp_practice_enable_cache)
   set(CACHE_OPTION
       "ccache"
       CACHE STRING "Compiler cache to be used")

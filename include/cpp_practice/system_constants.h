@@ -8,8 +8,8 @@
 ///
 #pragma once
 
-#include "modern_cpp_template_config.h"
+#include "cpp_practice_config.h"
 #include "string_view"
 
-///\brief the modern_cpp_template namespace
-namespace modern_cpp_template {}  // namespace modern_cpp_template
+///\brief the cpp_practice namespace
+namespace cpp_practice {}  // namespace cpp_practice

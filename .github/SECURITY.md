@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If there are any vulnerabilities in **modern_cpp_template**, then please do not hesitate
+If there are any vulnerabilities in **cpp_practice**, then please do not hesitate
 to _report them_.
 
 1. [Report a security vulnerability][].
@@ -22,4 +22,4 @@ to _report them_.
    vulnerability for whatever reason, you are free to publicly disclose it.
 
 [Report a security vulnerability]:
-  https://github.com/jamielapointe/modern_cpp_template/security/advisories
+  https://github.com/jamielapointe/cpp_practice/security/advisories

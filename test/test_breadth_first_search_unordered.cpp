@@ -2,12 +2,12 @@
 
 #include <vector>
 
-#include "modern_cpp_template/undirected_graph.h"
+#include "cpp_practice/undirected_graph.h"
 
 namespace {
 
 using Graph =
-    modern_cpp_template::algorithms::undirected_graph::UndirectedGraph<
+    cpp_practice::algorithms::undirected_graph::UndirectedGraph<
         std::string, int64_t>;
 using Node = Graph::Node;
 using NodeIndex = Graph::NodeIndex;

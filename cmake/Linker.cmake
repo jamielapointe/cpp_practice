@@ -2,7 +2,7 @@
 # or mold.
 # Parameters:
 #   TARGET_NAME [in] - The name of the target to use the custom linker
-macro(modern_cpp_template_configure_linker TARGET_NAME)
+macro(cpp_practice_configure_linker TARGET_NAME)
   include(CheckCXXCompilerFlag)
 
   set(USER_LINKER_OPTION
