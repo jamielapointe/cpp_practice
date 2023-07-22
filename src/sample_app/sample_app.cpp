@@ -47,8 +47,7 @@ void run_sample_app(spdlog::level::level_enum console_log_level,
   spdlog::set_default_logger(logger);
   spdlog::set_level(spdlog::level::debug);
 
-  spdlog::info("Application {} Started",
-               cpp_practice::options::kProjectName);
+  spdlog::info("Application {} Started", cpp_practice::options::kProjectName);
 
   // Start a thread - it will automatically join on destruction
   std::jthread t1(run_simple_thread, fibonacci_number);

@@ -8,7 +8,7 @@
 <!-- [![Latest GitHub release][releases-badge]][github releases] -->
 <!-- [![Gitter chat][gitter-badge]][gitter] -->
 <!-- [![Conan.io][conan-badge]][conan-link] -->
- 
+
 ## Table of Contents
 
 - [cpp_practice](#cpp_practice)
@@ -315,7 +315,7 @@ docker run -it my_project:latest
 [codeql]:
   https://github.com/jamielapointe/cpp_practice/actions/workflows/codeql_analysis.yml
 [codacy-badge]:
-  https://app.codacy.com/project/badge/Grade/a709a287b12249c3a4a57165f3306411
+  https://app.codacy.com/project/badge/Grade/03ea7240f9044232a4dfaba69941b4f7
 [codacy]:
   https://app.codacy.com/gh/jamielapointe/cpp_practice/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
 [Google C++ styleguide]: https://google.github.io/styleguide/cppguide.html
