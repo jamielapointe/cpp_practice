@@ -315,6 +315,7 @@ def run_pool_job(
     colored_stdout: bool = False,
 ) -> None:
     while True:
+        return_code = ExitStatus.SUCCESS
         try:
             outs, errs = next(it)
         except StopIteration:
