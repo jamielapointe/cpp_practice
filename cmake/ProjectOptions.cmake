@@ -50,6 +50,26 @@ macro(cpp_practice_setup_options)
     set(DEFAULT_DOXYGEN OFF)
   endif()
 
+  set(ERROR_ACTIONS
+      IGNORE
+      THROW
+      ABORT
+      TERMINATE)
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(DEFAULT_ERROR_ACTION THROW)
+  else()
+    set(DEFAULT_ERROR_ACTION ABORT)
+  endif()
+  set(cpp_practice_DEFAULT_ERROR_ACTION
+      ${DEFAULT_ERROR_ACTION}
+      CACHE STRING "Default error action")
+  set_property(CACHE cpp_practice_DEFAULT_ERROR_ACTION PROPERTY STRINGS ${ERROR_ACTIONS})
+  list(
+    FIND
+    ERROR_ACTIONS
+    ${cpp_practice_DEFAULT_ERROR_ACTION}
+    ERROR_ACTION_INDEX)
+
   if(NOT PROJECT_IS_TOP_LEVEL)
     option(cpp_practice_BUILD_DOCUMENTATION "Generate Doxygen documentation" OFF)
     option(cpp_practice_ENABLE_IPO "Enable IPO/LTO" OFF)
@@ -67,8 +87,8 @@ macro(cpp_practice_setup_options)
     option(cpp_practice_ENABLE_CACHE "Enable ccache" OFF)
     option(cpp_practice_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
     option(cpp_practice_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
-    option(cpp_practice_ENABLE_INTERNAL_DEBUGGING
-           "Enable internal debugging - this is for testintg this project only" OFF)
+    option(cpp_practice_ENABLE_INTERNAL_DEBUGGING "Enable internal debugging - this is for testing this project only"
+           OFF)
     option(cpp_practice_ENABLE_SIMD "Enable SIMD optimizations" OFF)
     option(cpp_practice_ENABLE_DOXYGEN_WITH_CLANG "You have a version of doxygen that does supports clang" OFF)
     option(
@@ -92,8 +112,8 @@ macro(cpp_practice_setup_options)
     option(cpp_practice_ENABLE_CACHE "Enable ccache" ON)
     option(cpp_practice_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
     option(cpp_practice_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
-    option(cpp_practice_ENABLE_INTERNAL_DEBUGGING
-           "Enable internal debugging - this is for testintg this project only" ON)
+    option(cpp_practice_ENABLE_INTERNAL_DEBUGGING "Enable internal debugging - this is for testing this project only"
+           ON)
     option(cpp_practice_ENABLE_SIMD "Enable SIMD optimizations" OFF)
     option(
       cpp_practice_ENABLE_NATIVE_ARCHITECTURE
@@ -128,8 +148,7 @@ macro(cpp_practice_setup_options)
   endif()
 
   cpp_practice_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
-  if(LIBFUZZER_SUPPORTED AND (cpp_practice_ENABLE_SANITIZER_ADDRESS
-                              OR cpp_practice_ENABLE_SANITIZER_UNDEFINED))
+  if(LIBFUZZER_SUPPORTED AND (cpp_practice_ENABLE_SANITIZER_ADDRESS OR cpp_practice_ENABLE_SANITIZER_UNDEFINED))
     set(DEFAULT_FUZZER ON)
   else()
     set(DEFAULT_FUZZER OFF)
