@@ -23,12 +23,13 @@ add_executable(
   test_breadth_first_search_unordered.cpp
   test_factorial.cpp
   test_fibonacci.cpp
-  test_main.cpp)
-target_include_directories(
-  cpp_practice_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${cpp_practice_ROOT}/include
-                                    ${cpp_practice_BUILD_ROOT}/configured_files/include)
-target_link_libraries(cpp_practice_tests PRIVATE cpp_practice::cpp_practice_options
-                                                        cpp_practice::cpp_practice_warnings)
+  test_length_of_longest_substring.cpp
+  test_main.cpp
+  test_min_window.cpp
+  test_reverse_words.cpp)
+target_include_directories(cpp_practice_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${cpp_practice_ROOT}/include
+                                                      ${cpp_practice_BUILD_ROOT}/configured_files/include)
+target_link_libraries(cpp_practice_tests PRIVATE cpp_practice::cpp_practice_options cpp_practice::cpp_practice_warnings)
 target_link_system_libraries(
   cpp_practice_tests
   PRIVATE

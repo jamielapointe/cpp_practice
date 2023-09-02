@@ -36,9 +36,6 @@ macro(cpp_practice_setup_options)
     set(DEFAULT_UBSAN ${SUPPORTS_UBSAN})
   endif()
 
-  option(cpp_practice_ENABLE_HARDENING "Enable hardening" ${DEFAULT_HARDENING})
-  option(cpp_practice_ENABLE_COVERAGE "Enable coverage reporting" OFF)
-
   cpp_practice_supports_sanitizers()
 
   # adjust as needed; pretty sure we need 1.9.7 to get the MathJax3 and chtml support
@@ -71,59 +68,66 @@ macro(cpp_practice_setup_options)
     ERROR_ACTION_INDEX)
 
   if(NOT PROJECT_IS_TOP_LEVEL)
-    option(cpp_practice_BUILD_DOCUMENTATION "Generate Doxygen documentation" OFF)
-    option(cpp_practice_ENABLE_IPO "Enable IPO/LTO" OFF)
-    option(cpp_practice_ENABLE_LIBPFM "Enable additional performance metrics counters by libpfm" OFF)
-    option(cpp_practice_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
-    option(cpp_practice_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
-    option(cpp_practice_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
-    option(cpp_practice_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" OFF)
-    option(cpp_practice_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
-    option(cpp_practice_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
-    option(cpp_practice_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
-    option(cpp_practice_ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
-    option(cpp_practice_ENABLE_CPPCHECK "Enable cpp-check analysis" OFF)
-    option(cpp_practice_ENABLE_PCH "Enable precompiled headers" OFF)
-    option(cpp_practice_ENABLE_CACHE "Enable ccache" OFF)
-    option(cpp_practice_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
-    option(cpp_practice_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
-    option(cpp_practice_ENABLE_INTERNAL_DEBUGGING "Enable internal debugging - this is for testing this project only"
-           OFF)
-    option(cpp_practice_ENABLE_SIMD "Enable SIMD optimizations" OFF)
-    option(cpp_practice_ENABLE_DOXYGEN_WITH_CLANG "You have a version of doxygen that does supports clang" OFF)
-    option(
-      cpp_practice_ENABLE_NATIVE_ARCHITECTURE
-      "Enable native architecture optimizations - warning may break if run on older hardware architectures or cross compiling!"
-      OFF)
+    set(DEFAULT_DOXYGEN OFF)
+    set(DEFAULT_IPO OFF)
+    set(DEFAULT_PFM OFF)
+    set(DEFAULT_ASAN OFF)
+    set(DEFAULT_UBSAN OFF)
+    set(DEFAULT_CLANG_TIDY OFF)
+    set(DEFAULT_CPPCHECK OFF)
+    set(DEFAULT_CACHE OFF)
+    set(DEFAULT_INTERNAL_DEBUGGING OFF)
+    set(DEFAULT_FUZZER OFF)
   else()
-    option(cpp_practice_BUILD_DOCUMENTATION "Generate Doxygen documentation" ${DEFAULT_DOXYGEN})
-    option(cpp_practice_ENABLE_IPO "Enable IPO/LTO" ${DEFAULT_IPO})
-    option(cpp_practice_ENABLE_LIBPFM "Enable additional performance metrics counters by libpfm" ${DEFAULT_PFM})
-    option(cpp_practice_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
-    option(cpp_practice_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ${DEFAULT_ASAN})
-    option(cpp_practice_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ${DEFAULT_ASAN})
-    option(cpp_practice_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ${DEFAULT_UBSAN})
-    option(cpp_practice_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
-    option(cpp_practice_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
-    option(cpp_practice_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
-    option(cpp_practice_ENABLE_CLANG_TIDY "Enable clang-tidy" ON)
-    option(cpp_practice_ENABLE_CPPCHECK "Enable cpp-check analysis" ON)
-    option(cpp_practice_ENABLE_PCH "Enable precompiled headers" OFF)
-    option(cpp_practice_ENABLE_CACHE "Enable ccache" ON)
-    option(cpp_practice_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
-    option(cpp_practice_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
-    option(cpp_practice_ENABLE_INTERNAL_DEBUGGING "Enable internal debugging - this is for testing this project only"
-           ON)
-    option(cpp_practice_ENABLE_SIMD "Enable SIMD optimizations" OFF)
-    option(
-      cpp_practice_ENABLE_NATIVE_ARCHITECTURE
-      "Enable native architecture optimizations - warning may break if run on older hardware architectures or cross compiling!"
-      OFF)
-    option(
-      cpp_practice_ENABLE_DOXYGEN_WITH_CLANG
-      "Enable if you have a version of doxygen that was linked with the clang 16.0+ library; this is useful for getting better parsing of C++ code"
-      OFF)
+    set(DEFAULT_CLANG_TIDY ON)
+    set(DEFAULT_CPPCHECK ON)
+    set(DEFAULT_CACHE ON)
+    set(DEFAULT_INTERNAL_DEBUGGING ON)
+
+    cpp_practice_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
+    if(LIBFUZZER_SUPPORTED AND (cpp_practice_ENABLE_SANITIZER_ADDRESS OR cpp_practice_ENABLE_SANITIZER_UNDEFINED))
+      set(DEFAULT_FUZZER ON)
+    else()
+      set(DEFAULT_FUZZER OFF)
+    endif()
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+      set(DEFAULT_COVERAGE ON)
+    else()
+      set(DEFAULT_COVERAGE OFF)
+    endif()
   endif()
+
+  option(cpp_practice_ENABLE_HARDENING "Enable hardening" ${DEFAULT_HARDENING})
+  option(cpp_practice_ENABLE_COVERAGE "Enable coverage reporting" ${DEFAULT_COVERAGE})
+  option(cpp_practice_BUILD_DOCUMENTATION "Generate Doxygen documentation" ${DEFAULT_DOXYGEN})
+  option(cpp_practice_ENABLE_IPO "Enable IPO/LTO" ${DEFAULT_IPO})
+  option(cpp_practice_ENABLE_LIBPFM "Enable additional performance metrics counters by libpfm" ${DEFAULT_PFM})
+  option(cpp_practice_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
+  option(cpp_practice_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ${DEFAULT_ASAN})
+  option(cpp_practice_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ${DEFAULT_ASAN})
+  option(cpp_practice_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ${DEFAULT_UBSAN})
+  option(cpp_practice_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
+  option(cpp_practice_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
+  option(cpp_practice_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
+  option(cpp_practice_ENABLE_CLANG_TIDY "Enable clang-tidy" ${DEFAULT_CLANG_TIDY})
+  option(cpp_practice_ENABLE_CPPCHECK "Enable cpp-check analysis" ${DEFAULT_CPPCHECK})
+  option(cpp_practice_ENABLE_PCH "Enable precompiled headers" OFF)
+  option(cpp_practice_ENABLE_CACHE "Enable ccache" ${DEFAULT_CACHE})
+  option(cpp_practice_ENABLE_SAMPLE_BASED_PROFILING "Enable sample based profiling" OFF)
+  option(cpp_practice_ENABLE_INSTRUMENTED_PROFILING "Enable instrumented based profiling" OFF)
+  option(cpp_practice_ENABLE_INTERNAL_DEBUGGING "Enable internal debugging - this is for testing this project only"
+         ${DEFAULT_INTERNAL_DEBUGGING})
+  option(cpp_practice_ENABLE_SIMD "Enable SIMD optimizations" OFF)
+  option(
+    cpp_practice_ENABLE_NATIVE_ARCHITECTURE
+    "Enable native architecture optimizations - warning may break if run on older hardware architectures or cross compiling!"
+    OFF)
+  option(
+    cpp_practice_ENABLE_DOXYGEN_WITH_CLANG
+    "Enable if you have a version of doxygen that was linked with the clang 16.0+ library; this is useful for getting better parsing of C++ code"
+    OFF)
+  option(cpp_practice_BUILD_FUZZ_TESTS "Enable fuzz testing executable" ${DEFAULT_FUZZER})
 
   if(NOT PROJECT_IS_TOP_LEVEL)
     mark_as_advanced(
@@ -144,17 +148,9 @@ macro(cpp_practice_setup_options)
       cpp_practice_ENABLE_INSTRUMENTED_PROFILING
       cpp_practice_ENABLE_SIMD
       cpp_practice_ENABLE_NATIVE_ARCHITECTURE
-      cpp_practice_ENABLE_DOXYGEN_WITH_CLANG)
+      cpp_practice_ENABLE_DOXYGEN_WITH_CLANG
+      cpp_practice_BUILD_FUZZ_TESTS)
   endif()
-
-  cpp_practice_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
-  if(LIBFUZZER_SUPPORTED AND (cpp_practice_ENABLE_SANITIZER_ADDRESS OR cpp_practice_ENABLE_SANITIZER_UNDEFINED))
-    set(DEFAULT_FUZZER ON)
-  else()
-    set(DEFAULT_FUZZER OFF)
-  endif()
-
-  option(cpp_practice_BUILD_FUZZ_TESTS "Enable fuzz testing executable" ${DEFAULT_FUZZER})
 
 endmacro()
 

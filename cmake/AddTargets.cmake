@@ -73,10 +73,6 @@ macro(cpp_practice_add_targets)
   set(PRIMARY_APP_LIST "")
   set(TEST_LIST "")
 
-  add_executable(cpp_practice_sample_app)
-  add_executable(cpp_practice::cpp_practice_sample_app ALIAS cpp_practice_sample_app)
-  cpp_practice_add_target_to_list(cpp_practice_sample_app PRIMARY_APP_LIST)
-
   if(PROJECT_IS_TOP_LEVEL AND cpp_practice_BUILD_FUZZ_TESTS)
     add_executable(cpp_practice_fuzz_tester)
     add_executable(cpp_practice::cpp_practice_fuzz_tester ALIAS cpp_practice_fuzz_tester)
@@ -105,8 +101,6 @@ macro(cpp_practice_postprocess_targets)
     target_link_libraries(${TARGET_NAME} PRIVATE cpp_practice::cpp_practice_options)
     target_link_libraries(${TARGET_NAME} PRIVATE cpp_practice::cpp_practice_warnings)
   endforeach()
-
-  target_link_system_libraries(cpp_practice_sample_app PRIVATE CLI11::CLI11)
 
   # Don't go any further if we're not top level
   if(NOT PROJECT_IS_TOP_LEVEL)
