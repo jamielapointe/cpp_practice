@@ -32,8 +32,11 @@ template <typename NodeValue>
 struct Node {
   using NodeIndex = gsl::index;
 
-  ///\brief true if this node has been visited by a search algorithm; otherwise
-  /// false
+  ///\brief \c true if this node has been visited by a search algorithm;
+  /// otherwise
+  /// \c false
+  ///\todo redo this class to remove \c is_visited and use a separate hash set
+  /// to keep track of visited nodes in search algorithms.
   bool is_visited{false};
 
   ///\brief The key id of the Node
@@ -48,20 +51,20 @@ struct Node {
 
   ///\brief return the node as a string
   ///\param node a Node to convert to a string
-  ///\return std::string
+  ///\return \c std::string
   static std::string to_string(Node const& node) {
     return fmt::format("Node ID: {} = {}", node.id, node.value);
   }
 
   ///\brief return the node as a string
-  ///\return std::string
+  ///\return \c std::string
   std::string to_string() const { return Node::to_string(*this); }
 
   ///\brief output stream operator - puts a string representation of the node
-  /// onto the std::ostream
-  ///\param os an existing std::ostream
-  ///\param node a node to "print" to the std::ostream
-  ///\return std::ostream& a reference to the std::ostream
+  /// onto the \c std::ostream
+  ///\param os an existing \c std::ostream
+  ///\param node a node to "print" to the \c std::ostream
+  ///\return \c std::ostream& a reference to the \c std::ostream
   friend std::ostream& operator<<(std::ostream& os, Node const& node) {
     os << to_string(node);
     return os;
@@ -314,6 +317,9 @@ class UndirectedGraph {
   /// \note The time complexity is O(V + E) where V is the number of vertices
   ///       and E is the number of edges
   /// \note the space complexity is O(V) where V is the number of vertices
+  ///
+  /// \todo ideally this would be a constant function and not change the state
+  /// of the object
   void breadth_first_search(
       NodeIndex start_node_index,
       std::function<bool(Node const&)> callback = nullptr) {
@@ -375,6 +381,9 @@ class UndirectedGraph {
   /// \note The time complexity is O(V + E) where V is the number of vertices
   ///       and E is the number of edges
   /// \note the space complexity is O(E) where E is the number of edges
+  ///
+  /// \todo ideally this would be a constant function and not change the state
+  /// of the object
   void depth_first_search(NodeIndex start_node_index,
                           std::function<bool(Node const&)> callback = nullptr) {
     auto& start_node = get_node(start_node_index);
@@ -440,6 +449,9 @@ class UndirectedGraph {
   /// \note The time complexity is O(E log V) where V is the number of vertices
   ///       and E is the number of edges
   /// \note The space complexity is O(V) where V is the number of vertices
+  ///
+  /// \todo ideally this would be a constant function and not change the state
+  /// of the object
   NodeDistanceMap dijkstra_shortest_path(
       NodeIndex start_node_index,
       std::function<bool(Node const&)> callback = nullptr) {
