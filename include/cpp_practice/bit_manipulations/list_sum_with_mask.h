@@ -19,59 +19,62 @@ Output:
 */
 
 #include <cstdint>
+#include <memory>
 
 namespace cpp_practice::bit_manipulations::list_sum_with_mask {
 
 static constexpr int kBase10 = 10;
-static constexpr uint8_t kMaskBitLength = 8;
+static constexpr int kNumBitsUint32 = 32;
 
 // NOLINTBEGIN(cppcoreguidelines-owning-memory)
 
 // Definition for singly-linked list.
-struct ListNode {
-  int val{0};
-  ListNode* next{nullptr};
-  explicit ListNode(int x) : val(x) {}
+template <typename T>
+struct ListNod_T {
+  T val{0};
+  std::unique_ptr<ListNod_T> next{nullptr};
+  explicit ListNod_T(T x) : val(x) {}
 };
 
-inline ListNode* list_sum_with_mask(ListNode* a, ListNode* b, uint8_t mask) {
-  ListNode* result = nullptr;
+using ListNode = ListNod_T<int>;
+
+inline std::unique_ptr<ListNode> list_sum_with_mask(
+    std::unique_ptr<ListNode>& a, std::unique_ptr<ListNode>& b, uint32_t mask) {
+  std::unique_ptr<ListNode> result = nullptr;
   if (a == nullptr || b == nullptr) {
     return result;
   }
 
   // Reverse the lists
-  auto a_current = a;
-  ListNode* a_reverse = new ListNode(a_current->val);
-  a_current = a_current->next;
+  auto a_current = a.get();
+  auto a_reverse = std::make_unique<ListNode>(a_current->val);
+  a_current = a_current->next.get();
   while (a_current != nullptr) {
-    auto temp = a_reverse;
-    a_reverse = new ListNode(a_current->val);
-    a_reverse->next = temp;
-    a_current = a_current->next;
+    auto temp = std::move(a_reverse);
+    a_reverse = std::make_unique<ListNode>(a_current->val);
+    a_reverse->next = std::move(temp);
+    a_current = a_current->next.get();
   }
 
-  auto b_current = b;
-  ListNode* b_reverse = new ListNode(b_current->val);
-  b_current = b_current->next;
+  auto b_current = b.get();
+  auto b_reverse = std::make_unique<ListNode>(b_current->val);
+  b_current = b_current->next.get();
   while (b_current != nullptr) {
-    auto temp = b_reverse;
-    b_reverse = new ListNode(b_current->val);
-    b_reverse->next = temp;
-    b_current = b_current->next;
+    auto temp = std::move(b_reverse);
+    b_reverse = std::make_unique<ListNode>(b_current->val);
+    b_reverse->next = std::move(temp);
+    b_current = b_current->next.get();
   }
 
   // Start building result in reverse
   int carry = 0;
-  auto a_reverse_current = a_reverse;
-  auto b_reverse_current = b_reverse;
-  uint8_t mask_shift{0x00};
-  uint8_t mask_mask{0x01};
-  ListNode* result_reverse = nullptr;
-  ListNode* result_reverse_head = nullptr;
+  auto a_reverse_current = a_reverse.get();
+  auto b_reverse_current = b_reverse.get();
+  uint32_t mask_shift{0x00};
+  uint32_t mask_mask{0x01};
   while (a_reverse_current != nullptr || b_reverse_current != nullptr) {
     int sum = carry;
-    uint8_t mask_bit = (mask & mask_mask) >> mask_shift;
+    uint32_t mask_bit = (mask & mask_mask) >> mask_shift;
     if (mask_bit == 1) {
       if (a_reverse_current != nullptr) {
         sum += a_reverse_current->val;
@@ -84,30 +87,28 @@ inline ListNode* list_sum_with_mask(ListNode* a, ListNode* b, uint8_t mask) {
     } else {
       carry = 0;
     }
-    if (result_reverse == nullptr) {
-      result_reverse = new ListNode(sum);
-      result_reverse_head = result_reverse;
+    if (result == nullptr) {
+      result = std::make_unique<ListNode>(sum);
     } else {
-      result_reverse->next = new ListNode(sum);
-      result_reverse = result_reverse->next;
+      // reverse the result
+      auto temp = std::move(result);
+      result = std::make_unique<ListNode>(sum);
+      result->next = std::move(temp);
     }
-    mask_shift = (mask_shift + 1) % kMaskBitLength;
-    mask_mask = static_cast<uint8_t>(mask_shift << 1);
+    mask_shift = (mask_shift + 1) % kNumBitsUint32;
+    mask_mask = (mask_mask << 1) % kNumBitsUint32;
     if (a_reverse_current != nullptr) {
-      a_reverse_current = a_reverse_current->next;
+      a_reverse_current = a_reverse_current->next.get();
     }
     if (b_reverse_current != nullptr) {
-      b_reverse_current = b_reverse_current->next;
+      b_reverse_current = b_reverse_current->next.get();
     }
   }
 
-  // put reverse in the proper order
-  ListNode* result_reverse_current = result_reverse_head;
-  while (result_reverse_current != nullptr) {
-    auto temp = result_reverse_current->next;
-    result_reverse_current->next = result;
-    result = result_reverse_current;
-    result_reverse_current = temp;
+  if (carry > 0) {
+    auto temp = std::move(result);
+    result = std::make_unique<ListNode>(carry);
+    result->next = std::move(temp);
   }
 
   return result;
