@@ -97,7 +97,6 @@ class Maze {
     find_paths();
   }
 
-  VisitedMap const& distances() const { return visited_; }
   Path const& paths() const { return path_; }
   bool was_path_found() const { return was_path_found_; }
 
@@ -131,6 +130,10 @@ class Maze {
     // Use a queue to store the nodes to visit
     // Use a matrix (map) to store the visited nodes; the visited map also keeps
     // track of the number of steps to get to each node
+    // Use a map to store the path from the tail node to the head node
+    // this ends up being one of the shortest paths (if more than oen)
+    // from the tail to the head.
+    // You can then reverse this to get the path from the head to the tail
     std::deque<Node> node_queue;
     node_queue.emplace_back(start_);
     // mark the started node as visited
@@ -178,9 +181,14 @@ std::vector<uint8_t> solution(const Maze::Map& map, const Maze::Node& start,
   if (!maze.was_path_found()) {
     return {};
   }
-  // auto distances = maze.distances();
+
+  // Get the paths (note that this is backwards)
   auto paths = maze.paths();
   std::vector<uint8_t> result;
+
+  // Get the path from the finish to the start and reverse it
+  // by storing in a stack and then iterating over the stack to
+  // get the proper order from start to finish
   std::stack<Maze::Node> path;
   auto current_node = finish;
   while (current_node != start) {
