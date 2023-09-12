@@ -3,64 +3,56 @@
 
 #include "cpp_practice/graphs/path_through_the_maze.h"
 
-using cpp_practice::graphs::path_through_the_maze;
+using cpp_practice::graphs::path_through_the_maze::Maze;
+using cpp_practice::graphs::path_through_the_maze::solution;
 
 // NOLINTBEGIN(cppcoreguidelines-owning-memory,
 // cppcoreguidelines-avoid-magic-numbers)
 
 /*
 Example 1:
-  #######
-  # F   #
-  ###  ##
-  #     #
-  # #  ##
-  # # S #
-  #######
-
-Input: maze = [[0,0,0,0,0],[1,1,0,0,1],[0,0,0,0,0],[0,1,0,0,1],[0,1,0,0,0]],
-start = [4,3], finish = [0,1] Output: "lul"
+    0123456
+  0 #######
+  1 # F   #
+  2 ###  ##
+  3 #     #
+  4 # #  ##
+  5 # # S #
+  6 #######
 */
 
 TEST(PathThroughTheMazeTest, Test00) {
-  std::vector<std::vector<int>> maze = {
-      {0, 0, 0, 0, 0}, {1, 1, 0, 0, 1}, {0, 0, 0, 0, 0},
-      {0, 1, 0, 0, 1}, {0, 1, 0, 0, 0},
+  Maze::Map maze = {
+      // 0  1  2  3  4  5  6
+      {0, 0, 0, 0, 0, 0, 0},  // 0
+      {0, 1, 1, 1, 1, 1, 1},  // 1
+      {0, 0, 0, 1, 1, 0, 0},  // 2
+      {0, 1, 1, 1, 1, 1, 0},  // 3
+      {0, 1, 0, 1, 1, 0, 0},  // 4
+      {0, 1, 0, 1, 1, 1, 0},  // 5
+      {0, 0, 0, 0, 0, 0, 0},  // 6
   };
-  std::vector<int> start = {4, 3};
-  std::vector<int> finish = {0, 1};
-  std::string expected = "lul";
-  std::string result = path_through_the_maze(maze, start, finish);
+  Maze::Node start = {5, 4};
+  Maze::Node finish = {1, 2};
+  std::vector<uint8_t> expected = {'l', 'u', 'u', 'u', 'u', 'l'};
+  std::vector<uint8_t> result = solution(maze, start, finish);
   EXPECT_EQ(result, expected);
 }
 
 /*
 Example 2:
- 0 ##############
- 1 #    #  ######
- 2 # ##### ##   #
- 3 #  #######   #
- 4 ###  #     ###
- 5 ####### ######
- 6 # S       F ##
- 7 ##############
-
-Input: maze =
-[
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 0
-  [0,1,1,1,1,0,1,0,0,0,0,0,0,0], // 1
-  [0,1,0,0,0,0,0,1,0,0,1,1,1,0], // 2
-  [0,1,1,0,0,0,0,0,0,0,1,1,1,0], // 3
-  [0,0,0,1,1,0,1,1,1,1,1,0,0,0], // 4
-  [0,0,0,0,0,0,0,1,0,0,0,0,0,0], // 5
-  [0,1,1,1,1,1,1,1,1,1,1,1,0,0], // 6
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 7
-]
-start = [6,2], finish=[6,10],
-Output = "rrrrrrrr"
+ 0 ############## 0
+ 1 #    #  ###### 1
+ 2 # ##### ##   # 2
+ 3 #  #######   # 3
+ 4 ###  #     ### 4
+ 5 ####### ###### 5
+ 6 # S       F ## 6
+ 7 ############## 7
 */
 TEST(PathThroughTheMazeTest, Test01) {
-  std::vector<std::vector<int>> maze = {
+  Maze::Map maze = {
+      // 0  1  2  3  4  5  6  7  8  9 10 11 12 13
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},  // 0
       {0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0},  // 1
       {0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0},  // 2
@@ -70,10 +62,29 @@ TEST(PathThroughTheMazeTest, Test01) {
       {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},  // 6
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},  // 7
   };
-  std::vector<int> start = {6, 2};
-  std::vector<int> finish = {6, 10};
-  std::string expected = "rrrrrrrr";
-  std::string result = path_through_the_maze(maze, start, finish);
+  Maze::Node start = {6, 2};
+  Maze::Node finish = {6, 10};
+  std::vector<uint8_t> expected = {'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r'};
+  std::vector<uint8_t> result = solution(maze, start, finish);
+  EXPECT_EQ(result, expected);
+}
+
+/*
+Example 3:
+#########
+##S###F##
+#########
+*/
+TEST(PathThroughTheMazeTest, Test02) {
+  Maze::Map maze = {
+      {0, 0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 1, 0, 0, 0, 1, 0, 0},
+      {0, 0, 0, 0, 0, 0, 0, 0, 0},
+  };
+  Maze::Node start = {1, 2};
+  Maze::Node finish = {1, 6};
+  std::vector<uint8_t> expected{};
+  std::vector<uint8_t> result = solution(maze, start, finish);
   EXPECT_EQ(result, expected);
 }
 

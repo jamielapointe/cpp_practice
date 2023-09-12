@@ -27,6 +27,7 @@ add_executable(
   test_list_sum_with_mask.cpp
   test_main.cpp
   test_min_window.cpp
+  test_path_through_the_maze.cpp
   test_pattern_matching_0.cpp
   test_reverse_words.cpp)
 target_include_directories(cpp_practice_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${cpp_practice_ROOT}/include
