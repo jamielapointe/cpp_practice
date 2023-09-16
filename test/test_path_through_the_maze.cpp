@@ -88,5 +88,14 @@ TEST(PathThroughTheMazeTest, Test02) {
   EXPECT_EQ(result, expected);
 }
 
+TEST(PathThroughTheMazeTest, Test03) {
+  Maze::Map maze = {{1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}};
+  Maze::Node start = {0, 0};
+  Maze::Node finish = {8, 0};
+  std::vector<uint8_t> expected = {'d', 'd', 'd', 'd', 'd', 'd', 'd', 'd'};
+  std::vector<uint8_t> result = solution(maze, start, finish);
+  EXPECT_EQ(result, expected);
+}
+
 // NOLINTEND(cppcoreguidelines-owning-memory,
 // cppcoreguidelines-avoid-magic-numbers)

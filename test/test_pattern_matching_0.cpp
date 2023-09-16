@@ -30,4 +30,12 @@ TEST(PatternMatching0Test, Test01) {
   EXPECT_EQ(result, expected);
 }
 
+TEST(PatternMatching0Test, PatternNotFound) {
+  uint32_t pattern = 0x00654321;
+  std::array<uint8_t, 7> array = {0xFF, 0xFF, 0x00, 0x65, 0x43, 0x22, 0xFF};
+  int expected = -1;
+  int result = find_pattern<7>(pattern, array);
+  EXPECT_EQ(result, expected);
+}
+
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)

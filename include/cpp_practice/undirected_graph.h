@@ -121,7 +121,7 @@ struct Edge {
 ///\tparam NodeValue_T Data structure representing the Node value
 ///\tparam CostType_T Data structure representing the cost type of the edge
 template <typename NodeValue_T, typename CostType_T>
-struct VertexDistance {
+struct VertexDistance_T {
   using NodeValue = NodeValue_T;
   using CostType = CostType_T;
   using Edge_T = Edge<NodeValue, CostType>;
@@ -132,8 +132,8 @@ struct VertexDistance {
   ///\brief The distance from the Node to another Node
   CostType distance{0};
 
-  ///\brief Compare two VertexDistance objects
-  auto operator<=>(VertexDistance const& other) const {
+  ///\brief Compare two VertexDistance_T objects
+  auto operator<=>(VertexDistance_T const& other) const {
     return (other.distance == distance && other.node_index == node_index)
                ? 0
                : (other.distance < distance
@@ -142,10 +142,10 @@ struct VertexDistance {
                              ? 1
                              : (other.node_index < node_index ? -1 : 1)));
   }
-  ///\brief Equality operator for two VertexDistance objects
+  ///\brief Equality operator for two VertexDistance_T objects
   /// The equality operator is specified in conjunction with the spaceship
   /// operator as an optimization for the compiler
-  auto operator==(VertexDistance const& other) const {
+  auto operator==(VertexDistance_T const& other) const {
     return other.distance == distance && other.node_index == node_index;
   }
 };  // namespace cpp_practice::algorithms::undirected_graph
@@ -170,7 +170,7 @@ class UndirectedGraph {
   using NodeMap = std::unordered_map<NodeIndex, Node>;
   using EdgeListIterator = typename EdgeList::iterator;
   using NodeDistanceMap = std::unordered_map<NodeIndex, CostType>;
-  using VertexDistance = VertexDistance<NodeValue, CostType>;
+  using VertexDistance = VertexDistance_T<NodeValue, CostType>;
   using VertexDistanceList = std::vector<VertexDistance>;
   using NodePriorityQueue =
       std::priority_queue<VertexDistance, VertexDistanceList,
@@ -228,12 +228,6 @@ class UndirectedGraph {
   ///\param node_index The key of the Node whose Edge objects you want to return
   ///\return EdgeList&
   EdgeList& get_edges(NodeIndex node_index) {
-    expect(
-        [node_index, this] {
-          return node_index >= 0 &&
-                 static_cast<size_t>(node_index) < adjacency_map().size();
-        },
-        Error_Code::kRangeError);
     typename NodeAdjacencyMap::iterator edge_iterator =
         adjacency_map().find(node_index);
     [[likely]] if (edge_iterator != adjacency_map().end()) {
@@ -246,12 +240,6 @@ class UndirectedGraph {
   ///\param node_index The node index
   ///\return Node const&
   Node& get_node(NodeIndex node_index) {
-    expect(
-        [node_index, this] {
-          return node_index >= 0 &&
-                 static_cast<size_t>(node_index) < node_map().size();
-        },
-        Error_Code::kRangeError);
     auto node_iterator = node_map().find(node_index);
     [[likely]] if (node_iterator != node_map().end()) {
       return node_iterator->second;

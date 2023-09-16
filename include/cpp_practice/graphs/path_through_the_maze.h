@@ -73,10 +73,16 @@ using std::size_t;
 
 class Maze {
  public:
-  using Node = std::array<int, 2>;
+  struct Node {
+    int row;
+    int col;
+    bool operator==(const Node& other) const {
+      return row == other.row && col == other.col;
+    }
+  };
   struct NodeHash {
     size_t operator()(const Node& node) const {
-      return std::hash<int>()(node[0]) ^ std::hash<int>()(node[1]);
+      return std::hash<int>()(node.row) ^ std::hash<int>()(node.col);
     }
   };
 
@@ -86,43 +92,15 @@ class Maze {
 
   Maze(const Map& maze, const Node& start, const Node& finish)
       : maze_(maze),
+        width_{static_cast<int>(maze_[0].size())},
+        height_{static_cast<int>(maze_.size())},
         start_(start),
         finish_(finish),
-        width_{static_cast<int>(maze_[0].size())},
-        height_{static_cast<int>(maze_.size())} {
-    visited_.resize(maze_.size());
-    for (auto& row : visited_) {
-      row.resize(maze_[0].size());
-    }
-    find_paths();
-  }
+        visited_(static_cast<size_t>(height_),
+                 std::vector<int>(static_cast<size_t>(width_), 0)) {}
 
   Path const& paths() const { return path_; }
   bool was_path_found() const { return was_path_found_; }
-
- private:
-  Map maze_;
-  Node start_;
-  Node finish_;
-  Path path_;
-  VisitedMap visited_;
-  bool was_path_found_{false};
-  int width_{0};
-  int height_{0};
-  static constexpr std::array<Node, 4> directions_ = {
-      {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}};
-
-  bool is_valid(int row, int col) const {
-    return row >= 0 && row < height_ && col >= 0 && col < width_ &&
-           maze_[static_cast<size_t>(row)][static_cast<size_t>(col)] == 1 &&
-           visited_[static_cast<size_t>(row)][static_cast<size_t>(col)] == 0;
-  }
-
-  void mark_visited(int row, int col, int prev_row, int prev_col) {
-    visited_[static_cast<size_t>(row)][static_cast<size_t>(col)] =
-        visited_[static_cast<size_t>(prev_row)][static_cast<size_t>(prev_col)] +
-        1;
-  }
 
   void find_paths() {
     // Finds all of the paths from the start to the finish
@@ -137,7 +115,7 @@ class Maze {
     std::deque<Node> node_queue;
     node_queue.emplace_back(start_);
     // mark the started node as visited
-    visited_[static_cast<size_t>(start_[0])][static_cast<size_t>(start_[1])] =
+    visited_[static_cast<size_t>(start_.row)][static_cast<size_t>(start_.col)] =
         1;
     while (!node_queue.empty()) {
       auto current_node = node_queue.front();
@@ -147,17 +125,41 @@ class Maze {
         return;
       }
       for (auto direction : directions_) {
-        Node next_node = {current_node[0] + direction[0],
-                          current_node[1] + direction[1]};
-        if (is_valid(next_node[0], next_node[1])) {
-          mark_visited(next_node[0], next_node[1], current_node[0],
-                       current_node[1]);
+        Node next_node = {current_node.row + direction.row,
+                          current_node.col + direction.col};
+        if (is_valid(next_node.row, next_node.col)) {
+          mark_visited(next_node.row, next_node.col, current_node.row,
+                       current_node.col);
           node_queue.emplace_back(next_node);
           // this is backwards on purpose
           path_.emplace(next_node, current_node);
         }
       }
     }
+  }
+
+ private:
+  Map maze_;
+  int width_{0};
+  int height_{0};
+  Node start_;
+  Node finish_;
+  Path path_;
+  VisitedMap visited_;
+  bool was_path_found_{false};
+  static constexpr std::array<Node, 4> directions_ = {
+      {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}};
+
+  bool is_valid(int row, int col) const {
+    return row >= 0 && row < height_ && col >= 0 && col < width_ &&
+           maze_[static_cast<size_t>(row)][static_cast<size_t>(col)] == 1 &&
+           visited_[static_cast<size_t>(row)][static_cast<size_t>(col)] == 0;
+  }
+
+  void mark_visited(int row, int col, int prev_row, int prev_col) {
+    visited_[static_cast<size_t>(row)][static_cast<size_t>(col)] =
+        visited_[static_cast<size_t>(prev_row)][static_cast<size_t>(prev_col)] +
+        1;
   }
 };
 
@@ -177,7 +179,9 @@ uint8_t get_direction(int row_dir, int col_dir) {
 
 std::vector<uint8_t> solution(const Maze::Map& map, const Maze::Node& start,
                               const Maze::Node& finish) {
+  // Search the maze and find the paths
   Maze maze(map, start, finish);
+  maze.find_paths();
   if (!maze.was_path_found()) {
     return {};
   }
@@ -198,8 +202,8 @@ std::vector<uint8_t> solution(const Maze::Map& map, const Maze::Node& start,
   auto previous_node = start;
   while (!path.empty()) {
     current_node = path.top();
-    result.emplace_back(get_direction(current_node[0] - previous_node[0],
-                                      current_node[1] - previous_node[1]));
+    result.emplace_back(get_direction(current_node.row - previous_node.row,
+                                      current_node.col - previous_node.col));
     previous_node = current_node;
     path.pop();
   }

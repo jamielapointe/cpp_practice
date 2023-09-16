@@ -48,8 +48,8 @@ class BitSlidingWindow {
   ///\return true if there is more data to proccess
   ///\return false there is no more data to process
   bool has_more() const {
-    return (current_byte_ * kBitsPerByte + current_bit_in_byte_ +
-            kWindowSize) <= (kArraySize * kBitsPerByte);
+    return (current_bit_position() + kWindowSizeBits) <=
+           (kArraySizeBytes * kBitsPerByte);
   }
 
   ///\brief get the current head bit position
@@ -77,13 +77,13 @@ class BitSlidingWindow {
     uint32_t result = 0;
     int bits_processed = 0;
 
-    while (bits_processed < kWindowSize) {
-      if (current_byte >= kArraySize) break;
+    while (bits_processed < kWindowSizeBits) {
+      if (current_byte >= kArraySizeBytes) break;
 
       // Number of bits left in the current byte
       int bits_left = kBitsPerByte - current_bit_in_byte;
       // Number of bits needed from the current byte
-      int bits_needed = std::min(kWindowSize - bits_processed, bits_left);
+      int bits_needed = std::min(kWindowSizeBits - bits_processed, bits_left);
 
       // Extract bits from the current byte
       uint32_t byte_part =
@@ -99,7 +99,7 @@ class BitSlidingWindow {
       // Move to the next byte if necessary
       if (current_bit_in_byte >= kBitsPerByte) {
         current_bit_in_byte = 0;
-        current_byte++;
+        ++current_byte;
       }
     }
 
@@ -112,11 +112,11 @@ class BitSlidingWindow {
   int current_byte_ = 0;
 
   static constexpr int kBitsPerByte = 8;
-  static constexpr int kWindowSize = 32;
-  static constexpr int kArraySize = static_cast<int>(array_length);
+  static constexpr int kWindowSizeBits = 32;
+  static constexpr int kArraySizeBytes = static_cast<int>(array_length);
 
   static int get_result_r_shift_value(int bits_processed, int bits_needed) {
-    return (kWindowSize - bits_processed - bits_needed);
+    return (kWindowSizeBits - bits_processed - bits_needed);
   }
 
   static int get_byte_r_shift_value(int bits_needed, int current_bit_in_byte) {
@@ -124,13 +124,16 @@ class BitSlidingWindow {
   }
 
   static uint32_t get_byte_mask(int bits_needed) {
-    return ((1 << bits_needed) - 1);
+    return ((static_cast<uint32_t>(1) << static_cast<uint32_t>(bits_needed)) -
+            static_cast<uint32_t>(1));
   }
 
   uint32_t get_byte_part(int bits_needed, int current_byte,
                          int current_bit_in_byte) const {
-    return (array_.at(static_cast<std::size_t>(current_byte)) >>
-            get_byte_r_shift_value(bits_needed, current_bit_in_byte)) &
+    return (static_cast<uint32_t>(
+                array_.at(static_cast<std::size_t>(current_byte))) >>
+            static_cast<uint32_t>(
+                get_byte_r_shift_value(bits_needed, current_bit_in_byte))) &
            get_byte_mask(bits_needed);
   }
 };

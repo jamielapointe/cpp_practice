@@ -106,5 +106,12 @@ TEST(ListSumWithMaskTest, Test02) {
   EXPECT_EQ(expected_current, nullptr);
 }
 
+TEST(ListSumWithMaskTest, NullResult) {
+  std::unique_ptr<ListNode> l1 = nullptr;
+  std::unique_ptr<ListNode> l2 = nullptr;
+  auto result = list_sum_with_mask(l1, l2, 0b00000000);
+  EXPECT_EQ(result, nullptr);
+}
+
 // NOLINTEND(cppcoreguidelines-owning-memory,
 // cppcoreguidelines-avoid-magic-numbers)

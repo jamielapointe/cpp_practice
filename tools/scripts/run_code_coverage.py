@@ -44,59 +44,47 @@ def run_tests(inputs: Inputs) -> None:
         f'-Dcpp_practice_ENABLE_SANITIZER_LEAK:BOOL={inputs.sanitizers} '
         f'-Dcpp_practice_ENABLE_SANITIZER_UNDEFINED:BOOL={inputs.sanitizers}')
     print(f'Running: {cmake_configure_command}')
-    subprocess.run(
-        cmake_configure_command,
-        shell=True,
-        check=True,
-        cwd=ROOT_DIR,
-        text=True)
+    subprocess.run(cmake_configure_command, check=True, cwd=ROOT_DIR, text=True)
 
     cmake_build_command = 'cmake --build ./build --parallel 4'
     print(f'Running: {cmake_build_command}')
-    subprocess.run(
-        cmake_build_command, shell=True, check=True, cwd=ROOT_DIR, text=True)
+    subprocess.run(cmake_build_command, check=True, cwd=ROOT_DIR, text=True)
 
     cmake_test_command = './cpp_practice_tests --gtest_output=xml'
     print(f'Running: {cmake_test_command}')
-    subprocess.run(
-        cmake_test_command, shell=True, check=True, cwd=TEST_DIR, text=True)
+    subprocess.run(cmake_test_command, check=True, cwd=TEST_DIR, text=True)
 
     cmake_coverage_command = (
         'llvm-profdata-16 merge -sparse default.profraw '
         '-o cpp_practice_tests.profdata ')
     print(f'Running: {cmake_coverage_command}')
-    subprocess.run(
-        cmake_coverage_command, shell=True, check=True, cwd=TEST_DIR, text=True)
+    subprocess.run(cmake_coverage_command, check=True, cwd=TEST_DIR, text=True)
 
     cmake_coverage_command = (
         'llvm-profdata-16 merge -sparse default.profraw -o '
         'cpp_practice_tests.profdata ')
     print(f'Running: {cmake_coverage_command}')
-    subprocess.run(
-        cmake_coverage_command, shell=True, check=True, cwd=TEST_DIR, text=True)
+    subprocess.run(cmake_coverage_command, check=True, cwd=TEST_DIR, text=True)
 
     cmake_coverage_command = (
         'llvm-cov-16 export ./cpp_practice_tests '
         '-instr-profile=cpp_practice_tests.profdata > coverage.json')
     print(f'Running: {cmake_coverage_command}')
-    subprocess.run(
-        cmake_coverage_command, shell=True, check=True, cwd=TEST_DIR, text=True)
+    subprocess.run(cmake_coverage_command, check=True, cwd=TEST_DIR, text=True)
 
     cmake_coverage_command = (
         'llvm-cov-16 export ./cpp_practice_tests '
         '-instr-profile=cpp_practice_tests.profdata '
         '-format=lcov > coverage.lcov')
     print(f'Running: {cmake_coverage_command}')
-    subprocess.run(
-        cmake_coverage_command, shell=True, check=True, cwd=TEST_DIR, text=True)
+    subprocess.run(cmake_coverage_command, check=True, cwd=TEST_DIR, text=True)
 
     cmake_coverage_command = (
         'llvm-cov-16 show ./cpp_practice_tests '
         '-instr-profile=cpp_practice_tests.profdata '
         '-format=html > coverage.html')
     print(f'Running: {cmake_coverage_command}')
-    subprocess.run(
-        cmake_coverage_command, shell=True, check=True, cwd=TEST_DIR, text=True)
+    subprocess.run(cmake_coverage_command, check=True, cwd=TEST_DIR, text=True)
 
 
 def cli_arguments() -> tuple[argparse.Namespace, argparse.ArgumentParser]:

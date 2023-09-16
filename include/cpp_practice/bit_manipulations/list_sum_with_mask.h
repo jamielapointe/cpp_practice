@@ -1,13 +1,14 @@
 /*
  You are given two linked lists representing two non-negative numbers.
- The digits are stored in left to right order of the integer the represent.
+ The digits are stored in left to right order of the integer they represent.
  You are also givin a circular mask. The mask is a 8-bit integer.  The mask
  is circular such that the 0th bit in the mask correspond the 0th digit of the
  integer in the linked list, the 8th digit (if available) in the integer, the
-16th digit (if available), and so on.  If the masked bit is a 1 then sum the
-digits, otherwise add 0 to the resultant linked list for that digit.
+ 16th digit (if available), and so on.  If the masked bit is a 1 then sum the
+ digits, otherwise add 0 to the resultant linked list for that digit.
 
-Write a function that adds the two numbers and returns the sum as a linked list.
+ Write a function that adds the two numbers and returns the sum as a linked
+ list.
 
 For example:
 Input:
@@ -25,6 +26,8 @@ namespace cpp_practice::bit_manipulations::list_sum_with_mask {
 
 static constexpr int kBase10 = 10;
 static constexpr int kNumBitsUint32 = 32;
+static constexpr int kMaxMaskShift = 7;
+static constexpr int kMaxMask = 0b10000000;
 
 // NOLINTBEGIN(cppcoreguidelines-owning-memory)
 
@@ -95,8 +98,8 @@ inline std::unique_ptr<ListNode> list_sum_with_mask(
       result = std::make_unique<ListNode>(sum);
       result->next = std::move(temp);
     }
-    mask_shift = (mask_shift + 1) % kNumBitsUint32;
-    mask_mask = (mask_mask << 1) % kNumBitsUint32;
+    mask_shift = mask_shift < kMaxMaskShift ? (mask_shift + 1) : 0;
+    mask_mask = mask_mask < kMaxMask ? (mask_mask << 1) : 0b00000001;
     if (a_reverse_current != nullptr) {
       a_reverse_current = a_reverse_current->next.get();
     }

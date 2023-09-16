@@ -20,9 +20,10 @@ TEST(MinWindowTest, Basic04) { EXPECT_EQ(min_window("bbaa", "aba"), "baa"); }
 
 TEST(MinWindowTest, Basic06) { EXPECT_EQ(min_window("bbaa", "abaaa"), ""); }
 
-// TEST(MinWindowTest, LongTest00) {
-//   string s;
-//   string t;
-//   string expected;
-//   EXPECT_EQ(minWindow(s, t), expected);
-// }
+TEST(MinWindowTest, LongTest00) {
+  EXPECT_EQ(min_window("aaaaaaaaaaaabbbbbcdd", "abcdd"), "abbbbbcdd");
+}
+
+TEST(MinWindowTest, NotFound) {
+  EXPECT_EQ(min_window("aaaaaaaaaaaabbbbbcdd", "abcde"), "");
+}

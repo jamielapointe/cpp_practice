@@ -46,11 +46,10 @@ inline constexpr bool do_log_error() {
          action == options::Error_Action::kThrow;
 }
 
-inline constexpr void log_error(Error_Code error_code,
-                                std::string_view file_name, uint_least32_t line,
-                                uint_least32_t column,
-                                std::string_view function_name,
-                                std::string_view message) {
+inline void log_error(Error_Code error_code, std::string_view file_name,
+                      uint_least32_t line, uint_least32_t column,
+                      std::string_view function_name,
+                      std::string_view message) {
   spdlog::critical(
       "Expectation with error_code {} [ {} ] failed at file {} ({}:{}) `{}`"
       "{}",
@@ -64,7 +63,7 @@ inline constexpr void log_error(Error_Code error_code,
 
 template <options::Error_Action action = options::kDefaultErrorAction,
           typename Condition_T>
-inline constexpr void expect(
+inline void expect(
     Condition_T condition, Error_Code error_code, std::string_view message = "",
     std::source_location location = std::source_location::current()) {
   if constexpr (internal::do_log_error<action>()) {
