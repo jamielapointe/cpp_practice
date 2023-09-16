@@ -7,8 +7,8 @@
 namespace {
 
 using Graph =
-    cpp_practice::algorithms::undirected_graph::UndirectedGraph<
-        std::string, int64_t>;
+    cpp_practice::algorithms::undirected_graph::UndirectedGraph<std::string,
+                                                                int64_t>;
 using Node = Graph::Node;
 using NodeIndex = Graph::NodeIndex;
 
@@ -160,6 +160,75 @@ TEST(BreadthFirstSearchUndirectedTest, TestReturnEarly) {  // NOLINT(cppcoreguid
   graph.breadth_first_search(nodeid0, [&bfs_node_container](Node const& node) {
     bfs_node_container.push_back(node);
     if (node.key() == nodeid5) return true;
+    return false;
+  });
+
+  ASSERT_EQ(bfs_node_container, bfs_expected_node_container);
+}
+
+TEST(BreadthFirstSearchUndirectedTest, TestGetEdges) {
+  static constexpr NodeIndex nodeid0{0};
+  Graph graph;
+  auto edges = graph.get_edges(nodeid0);
+  ASSERT_TRUE(edges.empty());
+}
+
+TEST(BreadthFirstSearchUndirectedTest, TestGetNode) {
+  static constexpr NodeIndex nodeid0{0};
+  Graph graph;
+  auto node = graph.get_node(nodeid0);
+  ASSERT_EQ(node.key(), 0);
+  ASSERT_STREQ(node.value.c_str(), "");
+}
+
+// clang-format off
+TEST(BreadthFirstSearchUndirectedTest, TestFindFirstNode) {  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables,cppcoreguidelines-owning-memory)
+  // clang-format on
+
+  static constexpr NodeIndex nodeid0{0};
+  static constexpr NodeIndex nodeid1{1};
+  static constexpr NodeIndex nodeid2{2};
+  static constexpr NodeIndex nodeid3{3};
+  static constexpr NodeIndex nodeid4{4};
+  static constexpr NodeIndex nodeid5{5};
+  static constexpr NodeIndex nodeid6{6};
+  static constexpr NodeIndex nodeid7{7};
+  static constexpr NodeIndex nodeid8{8};
+  static constexpr NodeIndex nodeid9{9};
+
+  Graph graph;
+  Node node0{false, nodeid0, "Frankfurt"};
+  Node node1{false, nodeid1, "Mannheim"};
+  Node node2{false, nodeid2, "Würzburg"};
+  Node node3{false, nodeid3, "Kassel"};
+  Node node4{false, nodeid4, "Karlsruhe"};
+  Node node5{false, nodeid5, "Nürnberg"};
+  Node node6{false, nodeid6, "Erfurt"};
+  Node node7{false, nodeid7, "München"};
+  Node node8{false, nodeid8, "Augsburg"};
+  Node node9{false, nodeid9, "Stuttgart"};
+
+  std::stringstream ss;
+  ss << node0 << ", " << node1;
+  ASSERT_STREQ(ss.str().c_str(),
+               "Node ID: 0 = Frankfurt, Node ID: 1 = Mannheim");
+
+  std::vector<Node> bfs_expected_node_container{node0};
+  std::vector<Node> bfs_node_container;
+
+  graph.add_edge(nodeid0, "Frankfurt", nodeid1, "Mannheim");
+  graph.add_edge(nodeid0, "Frankfurt", nodeid2, "Würzburg");
+  graph.add_edge(nodeid0, "Frankfurt", nodeid3, "Kassel");
+  graph.add_edge(nodeid1, "Mannheim", nodeid4, "Karlsruhe");
+  graph.add_edge(nodeid2, "Würzburg", nodeid5, "Nürnberg");
+  graph.add_edge(nodeid2, "Würzburg", nodeid6, "Erfurt");
+  graph.add_edge(nodeid3, "Kassel", nodeid7, "München");
+  graph.add_edge(nodeid4, "Karlsruhe", nodeid8, "Augsburg");
+  graph.add_edge(nodeid5, "Nürnberg", nodeid9, "Stuttgart");
+
+  graph.breadth_first_search(nodeid0, [&bfs_node_container](Node const& node) {
+    bfs_node_container.push_back(node);
+    if (node.key() == nodeid0) return true;
     return false;
   });
 

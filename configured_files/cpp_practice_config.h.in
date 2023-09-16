@@ -11,7 +11,18 @@ namespace cpp_practice::options {
 
 // Convert CMake value types: OFF, ON
 // to: 0, 1 which C++ can easily handle
-enum class Cmake_Bool { OFF, ON };
+enum class Cmake_Bool {
+  OFF = 0,
+  Off = 0,
+  off = 0,
+  FALSE = 0,
+  False = 0,
+  ON = 1,
+  On = 1,
+  on = 1,
+  TRUE = 1,
+  True = 1
+};
 using enum Cmake_Bool;
 
 template <typename T>
@@ -31,6 +42,8 @@ template <Cast_Bool T>
 inline constexpr bool convert_cmake_bool(T in_bool) {
   return static_cast<bool>(in_bool);
 }
+
+enum class Error_Action { kIgnore, kThrow, kAbort, kTerminate };
 
 // Convert CMake string & integer options to C++ constexpr std::string_view and
 // int respectively
@@ -56,15 +69,16 @@ inline constexpr bool kEnableSanitizerThread {convert_cmake_bool(@cpp_practice_E
 inline constexpr bool kEnableSanitizerMemory {convert_cmake_bool(@cpp_practice_ENABLE_SANITIZER_MEMORY@)};
 inline constexpr bool kEnableSanitizerHardening {convert_cmake_bool(@cpp_practice_ENABLE_HARDENING@)};
 
-constexpr bool is_debug() {
-  #if defined(NDEBUG)
-    return false;
-  #else
-    return true;
-  #endif
-}
-
+inline constexpr Error_Action kDefaultErrorAction {Error_Action(@ERROR_ACTION_INDEX@)};
 // clang-format on
+
+constexpr bool is_debug() {
+#if defined(NDEBUG)
+  return false;
+#else
+  return true;
+#endif
+}
 
 }  // namespace cpp_practice::options
 

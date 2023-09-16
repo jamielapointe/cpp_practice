@@ -1,1 +1,0 @@
-target_sources(cpp_practice_sample_app PUBLIC sample_app.cpp)

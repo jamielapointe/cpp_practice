@@ -1,6 +1,6 @@
 # Error check settings
 Checks: "cppcoreguidelines-*,cert-*,abseil-*,google-*,-cert-dcl58-cpp"
-WarningsAsErrors: "clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,cert-*,abseil-*,google-*"
+WarningsAsErrors: "*"
 HeaderFilterRegex: "cpp_practice.*h"
 AnalyzeTemporaryDtors: false
 FormatStyle: file
