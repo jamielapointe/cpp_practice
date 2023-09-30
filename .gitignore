@@ -33,6 +33,7 @@
 
 # Build directories and binary files
 build/
+build*/
 out/
 cmake-build-*/
 conan-cache/

@@ -153,6 +153,8 @@ jobs:
           'clang++-16' && matrix.enable_ipo == false}}
         working-directory: ./build
         run: |
+          export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH
+          doxygen -v
           ninja -v doxygen-docs
 
       - name: Build with Make
