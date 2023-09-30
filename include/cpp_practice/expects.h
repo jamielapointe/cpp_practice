@@ -8,13 +8,12 @@
 /// user configurable via CMake
 ///
 
-#include <spdlog/spdlog.h>
-
 #include <array>
 #include <source_location>
 #include <string_view>
 
 #include "cpp_practice_config.h"
+#include "log/logger.h"
 
 namespace cpp_practice {
 
@@ -50,7 +49,7 @@ inline void log_error(Error_Code error_code, std::string_view file_name,
                       uint_least32_t line, uint_least32_t column,
                       std::string_view function_name,
                       std::string_view message) {
-  spdlog::critical(
+  cpp_practice::log::critical(
       "Expectation with error_code {} [ {} ] failed at file {} ({}:{}) `{}`"
       "{}",
       static_cast<int>(error_code),

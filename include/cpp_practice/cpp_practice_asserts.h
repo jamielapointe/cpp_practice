@@ -16,13 +16,13 @@
 #pragma once
 
 #include <fmt/core.h>
-#include <spdlog/spdlog.h>
 
 #include <cassert>
 #include <cstdint>
 #include <type_traits>
 
 #include "cpp_practice/system_constants.h"
+#include "log/logger.h"
 
 namespace cpp_practice::internal {
 
@@ -30,10 +30,11 @@ inline void print_error(char const* const expression, char const* const file,
                         uint32_t line, char const* const function,
                         char const* const message) {
   // Print to stderr and abort, as specified in <cassert>.
-  spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
-                   file == nullptr ? "<file>" : file, line,
-                   function == nullptr ? "<function>" : function, expression,
-                   message == nullptr ? "" : message);
+  cpp_practice::log::critical(
+      "Assertion failed at {}:{} in {}: {}; message = {}\n",
+      file == nullptr ? "<file>" : file, line,
+      function == nullptr ? "<function>" : function, expression,
+      message == nullptr ? "" : message);
 }
 
 // Generic default assert handler.

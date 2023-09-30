@@ -78,11 +78,13 @@ macro(cpp_practice_setup_options)
     set(DEFAULT_CACHE OFF)
     set(DEFAULT_INTERNAL_DEBUGGING OFF)
     set(DEFAULT_FUZZER OFF)
+    set(DEFAULT_LOGGING OFF)
   else()
     set(DEFAULT_CLANG_TIDY ON)
     set(DEFAULT_CPPCHECK ON)
     set(DEFAULT_CACHE ON)
     set(DEFAULT_INTERNAL_DEBUGGING ON)
+    set(DEFAULT_LOGGING OFF)
 
     cpp_practice_check_libfuzzer_support(LIBFUZZER_SUPPORTED)
     if(LIBFUZZER_SUPPORTED AND (cpp_practice_ENABLE_SANITIZER_ADDRESS OR cpp_practice_ENABLE_SANITIZER_UNDEFINED))
@@ -128,6 +130,7 @@ macro(cpp_practice_setup_options)
     "Enable if you have a version of doxygen that was linked with the clang 16.0+ library; this is useful for getting better parsing of C++ code"
     OFF)
   option(cpp_practice_BUILD_FUZZ_TESTS "Enable fuzz testing executable" ${DEFAULT_FUZZER})
+  option(cpp_practice_ENABLE_LOGGING "Enable logging" DEFAULT_LOGGING)
 
   if(NOT PROJECT_IS_TOP_LEVEL)
     mark_as_advanced(
@@ -149,7 +152,8 @@ macro(cpp_practice_setup_options)
       cpp_practice_ENABLE_SIMD
       cpp_practice_ENABLE_NATIVE_ARCHITECTURE
       cpp_practice_ENABLE_DOXYGEN_WITH_CLANG
-      cpp_practice_BUILD_FUZZ_TESTS)
+      cpp_practice_BUILD_FUZZ_TESTS
+      cpp_practice_ENABLE_LOGGING)
   endif()
 
 endmacro()
