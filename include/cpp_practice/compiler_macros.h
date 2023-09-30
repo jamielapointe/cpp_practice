@@ -14,87 +14,109 @@
 // Compiler identification, cpp_practice_COMP_*
 //------------------------------------------------------------------------------------------
 
-/// \internal cpp_practice_COMP_GNUC set to version (e.g., 951 for
-/// GCC 9.5.1) for all compilers compatible with GCC
 #ifdef __GNUC__
+/// cpp_practice_COMP_GNUC set to version (e.g., 951 for
+/// GCC 9.5.1) for all compilers compatible with GCC
 #  define cpp_practice_COMP_GNUC \
     (__GNUC__ * 100 + __GNUC_MINOR__ * 10 + __GNUC_PATCHLEVEL__)
 #else
+/// cpp_practice_COMP_GNUC set to 0 for all compilers not
+/// compatible with GCC
 #  define cpp_practice_COMP_GNUC 0
 #endif
 
-/// \internal cpp_practice_COMP_CLANG set to version (e.g., 372 for
-/// clang 3.7.2) if the compiler is clang
 #if defined(__clang__)
+/// cpp_practice_COMP_CLANG set to version (e.g., 372 for
+/// clang 3.7.2) if the compiler is clang
 #  define cpp_practice_COMP_CLANG \
     (__clang_major__ * 100 + __clang_minor__ * 10 + __clang_patchlevel__)
 #else
+/// cpp_practice_COMP_CLANG set to 0 if the compiler is not
+/// clang
 #  define cpp_practice_COMP_CLANG 0
 #endif
 
-/// \internal cpp_practice_COMP_CLANGAPPLE set to the version number
-/// (e.g. 9000000 for AppleClang 9.0) if the compiler is AppleClang
 #if defined(__clang__) && defined(__apple_build_version__)
+/// cpp_practice_COMP_CLANGAPPLE set to the version number
+/// (e.g. 9000000 for AppleClang 9.0) if the compiler is AppleClang
 #  define cpp_practice_COMP_CLANGAPPLE __apple_build_version__
 #else
+/// cpp_practice_COMP_CLANGAPPLE set to 0 if the compiler is
+/// not AppleClang
 #  define cpp_practice_COMP_CLANGAPPLE 0
 #endif
 
-/// \internal cpp_practice_COMP_CASTXML set to 1 if being preprocessed by
-/// CastXML
 #if defined(__castxml__)
+/// cpp_practice_COMP_CASTXML set to 1 if being preprocessed by
+/// CastXML
 #  define cpp_practice_COMP_CASTXML 1
 #else
+/// cpp_practice_COMP_CASTXML set to 0 if not being preprocessed
+/// by CastXML
 #  define cpp_practice_COMP_CASTXML 0
 #endif
 
-/// \internal cpp_practice_COMP_LLVM set to 1 if the compiler backend is
-/// llvm
 #if defined(__llvm__)
+/// cpp_practice_COMP_LLVM set to 1 if the compiler backend is
+/// llvm
 #  define cpp_practice_COMP_LLVM 1
 #else
+/// cpp_practice_COMP_LLVM set to 0 if the compiler backend is
+/// not llvm
 #  define cpp_practice_COMP_LLVM 0
 #endif
 
-/// \internal cpp_practice_COMP_ICC set to __INTEL_COMPILER if the
-/// compiler is Intel icc compiler, 0 otherwise
 #if defined(__INTEL_COMPILER)
+/// cpp_practice_COMP_ICC set to __INTEL_COMPILER if the
+/// compiler is Intel icc compiler, 0 otherwise
 #  define cpp_practice_COMP_ICC __INTEL_COMPILER
 #else
+/// cpp_practice_COMP_ICC set to 0 if the compiler is not
+/// Intel icc compiler
 #  define cpp_practice_COMP_ICC 0
 #endif
 
-/// \internal cpp_practice_COMP_CLANGICC set to __INTEL_CLANG_COMPILER if
-/// the compiler is Intel icx compiler, 0 otherwise
 #if defined(__INTEL_CLANG_COMPILER)
+/// cpp_practice_COMP_CLANGICC set to __INTEL_CLANG_COMPILER if
+/// the compiler is Intel icx compiler, 0 otherwise
 #  define cpp_practice_COMP_CLANGICC __INTEL_CLANG_COMPILER
 #else
+/// cpp_practice_COMP_CLANGICC set to 0 if the compiler is not
+/// Intel icx compiler
 #  define cpp_practice_COMP_CLANGICC 0
 #endif
 
-/// \internal cpp_practice_COMP_MINGW set to 1 if the compiler is mingw
 #if defined(__MINGW32__)
+/// cpp_practice_COMP_MINGW set to 1 if the compiler is mingw
 #  define cpp_practice_COMP_MINGW 1
 #else
+/// cpp_practice_COMP_MINGW set to 0 if the compiler is not
+/// mingw
 #  define cpp_practice_COMP_MINGW 0
 #endif
 
-/// \internal cpp_practice_COMP_SUNCC set to 1 if the compiler is Solaris
-/// Studio
 #if defined(__SUNPRO_CC)
+/// cpp_practice_COMP_SUNCC set to 1 if the compiler is Solaris
+/// Studio
 #  define cpp_practice_COMP_SUNCC 1
 #else
+/// cpp_practice_COMP_SUNCC set to 0 if the compiler is not
+/// Solaris Studio
 #  define cpp_practice_COMP_SUNCC 0
 #endif
 
-/// \internal cpp_practice_COMP_MSVC set to _MSC_VER if the compiler is
-/// Microsoft Visual C++, 0 otherwise.
 #if defined(_MSC_VER)
+/// cpp_practice_COMP_MSVC set to _MSC_VER if the compiler is
+/// Microsoft Visual C++, 0 otherwise.
 #  define cpp_practice_COMP_MSVC _MSC_VER
 #else
+/// cpp_practice_COMP_MSVC set to 0 if the compiler is not
+/// Microsoft Visual C++
 #  define cpp_practice_COMP_MSVC 0
 #endif
 
+/// cpp_practice_COMP_NVCC set to version (e.g., 10000 for
+/// nvcc 10.0) if the compiler is nvcc
 #if defined(__NVCC__)
 #  if defined(__CUDACC_VER_MAJOR__) && (__CUDACC_VER_MAJOR__ >= 9)
 #    define cpp_practice_COMP_NVCC \
@@ -122,11 +144,13 @@
 //  2017        15.9    1916
 //  2019 RTW    16.0    1920
 
-/// \internal cpp_practice_COMP_MSVC_LANG set to _MSVC_LANG if the
-/// compiler is Microsoft Visual C++, 0 otherwise.
 #if defined(_MSVC_LANG)
+/// cpp_practice_COMP_MSVC_LANG set to _MSVC_LANG if the
+/// compiler is Microsoft Visual C++, 0 otherwise.
 #  define cpp_practice_COMP_MSVC_LANG _MSVC_LANG
 #else
+/// cpp_practice_COMP_MSVC_LANG set to 0 if the compiler is not
+/// Microsoft Visual C++
 #  define cpp_practice_COMP_MSVC_LANG 0
 #endif
 
@@ -135,9 +159,9 @@
 // (default as of VS 2019)   C++14     201402L /std:c++17 C++17     201703L
 // /std:c++latest                       >C++17    >201703L
 
-/// \internal cpp_practice_COMP_MSVC_STRICT set to 1 if the compiler is
+/// cpp_practice_COMP_MSVC_STRICT set to 1 if the compiler is
 /// really Microsoft Visual C++ and not ,e.g., ICC or clang-cl
-#if cpp_practice_COMP_MSVC &&                                   \
+#if cpp_practice_COMP_MSVC &&                            \
     !(cpp_practice_COMP_ICC || cpp_practice_COMP_LLVM || \
       cpp_practice_COMP_CLANG)
 #  define cpp_practice_COMP_MSVC_STRICT _MSC_VER
@@ -145,7 +169,7 @@
 #  define cpp_practice_COMP_MSVC_STRICT 0
 #endif
 
-/// \internal cpp_practice_COMP_IBM set to xlc version if the compiler is
+/// cpp_practice_COMP_IBM set to xlc version if the compiler is
 /// IBM XL C++
 // XLC   version
 // 3.1   0x0301
@@ -158,7 +182,7 @@
 #  define cpp_practice_COMP_IBM 0
 #endif
 
-/// \internal cpp_practice_COMP_PGI set to PGI version if the compiler is
+/// cpp_practice_COMP_PGI set to PGI version if the compiler is
 /// Portland Group Compiler
 #if defined(__PGI)
 #  define cpp_practice_COMP_PGI (__PGIC__ * 100 + __PGIC_MINOR__)
@@ -166,7 +190,7 @@
 #  define cpp_practice_COMP_PGI 0
 #endif
 
-/// \internal cpp_practice_COMP_ARM set to 1 if the compiler is ARM
+/// cpp_practice_COMP_ARM set to 1 if the compiler is ARM
 /// Compiler
 #if defined(__CC_ARM) || defined(__ARMCC_VERSION)
 #  define cpp_practice_COMP_ARM 1
@@ -174,7 +198,7 @@
 #  define cpp_practice_COMP_ARM 0
 #endif
 
-/// \internal cpp_practice_COMP_EMSCRIPTEN set to 1 if the compiler is
+/// cpp_practice_COMP_EMSCRIPTEN set to 1 if the compiler is
 /// Emscripten Compiler
 #if defined(__EMSCRIPTEN__)
 #  define cpp_practice_COMP_EMSCRIPTEN 1
@@ -182,7 +206,7 @@
 #  define cpp_practice_COMP_EMSCRIPTEN 0
 #endif
 
-/// \internal cpp_practice_COMP_FCC set to FCC version if the compiler is
+/// cpp_practice_COMP_FCC set to FCC version if the compiler is
 /// Fujitsu Compiler (traditional mode) \note The Fujitsu C/C++ compiler uses
 /// the traditional mode based on EDG g++ 6.1 by default or if invoked with the
 /// -Nnoclang flag
@@ -193,7 +217,7 @@
 #  define cpp_practice_COMP_FCC 0
 #endif
 
-/// \internal cpp_practice_COMP_CLANGFCC set to FCC version if the
+/// cpp_practice_COMP_CLANGFCC set to FCC version if the
 /// compiler is Fujitsu Compiler (Clang mode) \note The Fujitsu C/C++ compiler
 /// uses the non-traditional mode based on Clang 7.1.0 if invoked with the
 /// -Nclang flag
@@ -204,7 +228,7 @@
 #  define cpp_practice_COMP_CLANGFCC 0
 #endif
 
-/// \internal cpp_practice_COMP_CPE set to CPE version if the compiler is
+/// cpp_practice_COMP_CPE set to CPE version if the compiler is
 /// HPE Cray Compiler (GCC based) \note This is the SVE-enabled C/C++ compiler
 /// from the HPE Cray Programming Environment (CPE) based on Cray GCC 8.1
 #if defined(_CRAYC) && !defined(__clang__)
@@ -214,7 +238,7 @@
 #  define cpp_practice_COMP_CPE 0
 #endif
 
-/// \internal cpp_practice_COMP_CLANGCPE set to CPE version if the
+/// cpp_practice_COMP_CLANGCPE set to CPE version if the
 /// compiler is HPE Cray Compiler (Clang based) \note This is the C/C++ compiler
 /// from the HPE Cray Programming Environment (CPE) based on Cray Clang 11.0
 /// without SVE-support
@@ -225,7 +249,7 @@
 #  define cpp_practice_COMP_CLANGCPE 0
 #endif
 
-/// \internal cpp_practice_COMP_LCC set to 1 if the compiler is MCST-LCC
+/// cpp_practice_COMP_LCC set to 1 if the compiler is MCST-LCC
 /// (MCST eLbrus Compiler Collection)
 #if defined(__LCC__) && defined(__MCST__)
 #  define cpp_practice_COMP_LCC (__LCC__ * 100 + __LCC_MINOR__)
@@ -233,9 +257,9 @@
 #  define cpp_practice_COMP_LCC 0
 #endif
 
-/// \internal cpp_practice_COMP_GNUC_STRICT set to 1 if the compiler is
+/// cpp_practice_COMP_GNUC_STRICT set to 1 if the compiler is
 /// really GCC and not a compatible compiler (e.g., ICC, clang, mingw, etc.)
-#if cpp_practice_COMP_GNUC &&                                         \
+#if cpp_practice_COMP_GNUC &&                                  \
     !(cpp_practice_COMP_CLANG || cpp_practice_COMP_ICC ||      \
       cpp_practice_COMP_CLANGICC || cpp_practice_COMP_MINGW || \
       cpp_practice_COMP_PGI || cpp_practice_COMP_IBM ||        \
@@ -248,44 +272,55 @@
 #  define cpp_practice_COMP_GNUC_STRICT 0
 #endif
 
-// GCC, and compilers that pretend to be it, have different version schemes, so
-// this only makes sense to use with the real GCC.
+/// GCC, and compilers that pretend to be it, have different version schemes, so
+/// this only makes sense to use with the real GCC.
 #if cpp_practice_COMP_GNUC_STRICT
-#  define cpp_practice_GNUC_STRICT_AT_LEAST(x, y, z)     \
+#  define cpp_practice_GNUC_STRICT_AT_LEAST(x, y, z)            \
     ((__GNUC__ > x) || (__GNUC__ == x && __GNUC_MINOR__ > y) || \
      (__GNUC__ == x && __GNUC_MINOR__ == y && __GNUC_PATCHLEVEL__ >= z))
-#  define cpp_practice_GNUC_STRICT_LESS_THAN(x, y, z)    \
+#else
+#  define cpp_practice_GNUC_STRICT_AT_LEAST(x, y, z) 0
+#endif
+
+/// GCC, and compilers that pretend to be it, have different version schemes, so
+/// this only makes sense to use with the real GCC.
+#if cpp_practice_COMP_GNUC_STRICT
+#  define cpp_practice_GNUC_STRICT_LESS_THAN(x, y, z)           \
     ((__GNUC__ < x) || (__GNUC__ == x && __GNUC_MINOR__ < y) || \
      (__GNUC__ == x && __GNUC_MINOR__ == y && __GNUC_PATCHLEVEL__ < z))
 #else
-#  define cpp_practice_GNUC_STRICT_AT_LEAST(x, y, z) 0
 #  define cpp_practice_GNUC_STRICT_LESS_THAN(x, y, z) 0
 #endif
 
-/// \internal cpp_practice_COMP_CLANG_STRICT set to 1 if the compiler is
+/// cpp_practice_COMP_CLANG_STRICT set to 1 if the compiler is
 /// really Clang and not a compatible compiler (e.g., AppleClang, etc.)
-#if cpp_practice_COMP_CLANG &&        \
-    !(cpp_practice_COMP_CLANGAPPLE || \
-      cpp_practice_COMP_CLANGICC ||   \
+#if cpp_practice_COMP_CLANG &&                                      \
+    !(cpp_practice_COMP_CLANGAPPLE || cpp_practice_COMP_CLANGICC || \
       cpp_practice_COMP_CLANGFCC || cpp_practice_COMP_CLANGCPE)
 #  define cpp_practice_COMP_CLANG_STRICT 1
 #else
 #  define cpp_practice_COMP_CLANG_STRICT 0
 #endif
 
-// Clang, and compilers forked from it, have different version schemes, so this
-// only makes sense to use with the real Clang.
+/// Clang, and compilers forked from it, have different version schemes, so this
+/// only makes sense to use with the real Clang.
 #if cpp_practice_COMP_CLANG_STRICT
-#  define cpp_practice_CLANG_STRICT_AT_LEAST(x, y, z)                   \
+#  define cpp_practice_CLANG_STRICT_AT_LEAST(x, y, z)                          \
     ((__clang_major__ > x) || (__clang_major__ == x && __clang_minor__ > y) || \
      (__clang_major__ == x && __clang_minor__ == y &&                          \
       __clang_patchlevel__ >= z))
-#  define cpp_practice_CLANG_STRICT_LESS_THAN(x, y, z)                  \
+#else
+#  define cpp_practice_CLANG_STRICT_AT_LEAST(x, y, z) 0
+#endif
+
+/// Clang, and compilers forked from it, have different version schemes, so this
+/// only makes sense to use with the real Clang.
+#if cpp_practice_COMP_CLANG_STRICT
+#  define cpp_practice_CLANG_STRICT_LESS_THAN(x, y, z)                         \
     ((__clang_major__ < x) || (__clang_major__ == x && __clang_minor__ < y) || \
      (__clang_major__ == x && __clang_minor__ == y &&                          \
       __clang_patchlevel__ < z))
 #else
-#  define cpp_practice_CLANG_STRICT_AT_LEAST(x, y, z) 0
 #  define cpp_practice_CLANG_STRICT_LESS_THAN(x, y, z) 0
 #endif
 
@@ -293,6 +328,8 @@
 // Architecture identification, cpp_practice_ARCH_*
 //------------------------------------------------------------------------------------------
 
+/// cpp_practice_ARCH_X86 set to 1 if the architecture is x86
+/// (32 or 64 bit)
 #if defined(__x86_64__) || (defined(_M_X64) && !defined(_M_ARM64EC)) || \
     defined(__amd64)
 #  define cpp_practice_ARCH_x86_64 1
@@ -300,26 +337,30 @@
 #  define cpp_practice_ARCH_x86_64 0
 #endif
 
+/// cpp_practice_ARCH_X86_OR_X86_64 set to 1 if the architecture
+/// is x86 (32 or 64 bit)
 #if defined(__i386__) || defined(_M_IX86) || defined(_X86_) || defined(__i386)
 #  define cpp_practice_ARCH_i386 1
 #else
 #  define cpp_practice_ARCH_i386 0
 #endif
 
+/// cpp_practice_ARCH_X86_OR_X86_64 set to 1 if the architecture
+/// is x86 (32 or 64 bit)
 #if cpp_practice_ARCH_x86_64 || cpp_practice_ARCH_i386
 #  define cpp_practice_ARCH_i386_OR_x86_64 1
 #else
 #  define cpp_practice_ARCH_i386_OR_x86_64 0
 #endif
 
-/// \internal cpp_practice_ARCH_ARM set to 1 if the architecture is ARM
+/// cpp_practice_ARCH_ARM set to 1 if the architecture is ARM
 #if defined(__arm__)
 #  define cpp_practice_ARCH_ARM 1
 #else
 #  define cpp_practice_ARCH_ARM 0
 #endif
 
-/// \internal cpp_practice_ARCH_ARM64 set to 1 if the architecture is
+/// cpp_practice_ARCH_ARM64 set to 1 if the architecture is
 /// ARM64
 #if defined(__aarch64__) || defined(_M_ARM64) || defined(_M_ARM64EC)
 #  define cpp_practice_ARCH_ARM64 1
@@ -327,7 +368,7 @@
 #  define cpp_practice_ARCH_ARM64 0
 #endif
 
-/// \internal cpp_practice_ARCH_ARM_OR_ARM64 set to 1 if the architecture
+/// cpp_practice_ARCH_ARM_OR_ARM64 set to 1 if the architecture
 /// is ARM or ARM64
 #if cpp_practice_ARCH_ARM || cpp_practice_ARCH_ARM64
 #  define cpp_practice_ARCH_ARM_OR_ARM64 1
@@ -335,16 +376,15 @@
 #  define cpp_practice_ARCH_ARM_OR_ARM64 0
 #endif
 
-/// \internal cpp_practice_ARCH_ARMV8 set to 1 if the architecture is
+/// cpp_practice_ARCH_ARMV8 set to 1 if the architecture is
 /// armv8 or greater.
-#if cpp_practice_ARCH_ARM_OR_ARM64 && defined(__ARM_ARCH) && \
-    __ARM_ARCH >= 8
+#if cpp_practice_ARCH_ARM_OR_ARM64 && defined(__ARM_ARCH) && __ARM_ARCH >= 8
 #  define cpp_practice_ARCH_ARMV8 1
 #else
 #  define cpp_practice_ARCH_ARMV8 0
 #endif
 
-/// \internal cpp_practice_HAS_ARM64_FP16 set to 1 if the architecture
+/// cpp_practice_HAS_ARM64_FP16 set to 1 if the architecture
 /// provides an IEEE compliant Arm fp16 type
 #if cpp_practice_ARCH_ARM_OR_ARM64
 #  ifndef cpp_practice_HAS_ARM64_FP16
@@ -356,14 +396,14 @@
 #  endif
 #endif
 
-/// \internal cpp_practice_ARCH_MIPS set to 1 if the architecture is MIPS
+/// cpp_practice_ARCH_MIPS set to 1 if the architecture is MIPS
 #if defined(__mips__) || defined(__mips)
 #  define cpp_practice_ARCH_MIPS 1
 #else
 #  define cpp_practice_ARCH_MIPS 0
 #endif
 
-/// \internal cpp_practice_ARCH_SPARC set to 1 if the architecture is
+/// cpp_practice_ARCH_SPARC set to 1 if the architecture is
 /// SPARC
 #if defined(__sparc__) || defined(__sparc)
 #  define cpp_practice_ARCH_SPARC 1
@@ -371,7 +411,7 @@
 #  define cpp_practice_ARCH_SPARC 0
 #endif
 
-/// \internal cpp_practice_ARCH_IA64 set to 1 if the architecture is
+/// cpp_practice_ARCH_IA64 set to 1 if the architecture is
 /// Intel Itanium
 #if defined(__ia64__)
 #  define cpp_practice_ARCH_IA64 1
@@ -379,7 +419,7 @@
 #  define cpp_practice_ARCH_IA64 0
 #endif
 
-/// \internal cpp_practice_ARCH_PPC set to 1 if the architecture is
+/// cpp_practice_ARCH_PPC set to 1 if the architecture is
 /// PowerPC
 #if defined(__powerpc__) || defined(__ppc__) || defined(_M_PPC) || \
     defined(__POWERPC__)

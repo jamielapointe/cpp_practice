@@ -15,6 +15,11 @@
 
 namespace cpp_practice::cpp_20::length_of_longest_substring {
 
+///\brief Find the length of the longest substring without repeating characters
+///\details Given a string s, find the length of the longest substring without
+/// repeating characters.
+///\param s The string to search
+///\return The length of the longest substring without repeating characters
 int length_of_longest_substring(std::string s) {
   using std::max;
   using std::string;

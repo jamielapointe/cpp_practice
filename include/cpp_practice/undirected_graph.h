@@ -30,6 +30,7 @@ namespace cpp_practice::algorithms::undirected_graph {
 ///\tparam NodeValue The type of the Value - must support operator<<
 template <typename NodeValue>
 struct Node {
+  ///\brief The type of the NodeIndex
   using NodeIndex = gsl::index;
 
   ///\brief \c true if this node has been visited by a search algorithm;
@@ -100,9 +101,13 @@ struct Node {
 /// of numeric type
 template <typename NodeValue_T, typename CostType_T>
 struct Edge {
+  ///\brief The type of the NodeValue
   using NodeValue = NodeValue_T;
+  ///\brief The type of the cost of the edge
   using CostType = CostType_T;
+  ///\brief The type of the Node
   using Node_T = Node<NodeValue>;
+  ///\brief The type of the NodeIndex
   using NodeIndex = typename Node_T::NodeIndex;
 
   ///\brief The head Node index of the edge on one side of the edge
@@ -122,9 +127,13 @@ struct Edge {
 ///\tparam CostType_T Data structure representing the cost type of the edge
 template <typename NodeValue_T, typename CostType_T>
 struct VertexDistance_T {
+  ///\brief The type of the NodeValue
   using NodeValue = NodeValue_T;
+  ///\brief The type of the cost of the edge
   using CostType = CostType_T;
+  ///\brief The type of the Node
   using Edge_T = Edge<NodeValue, CostType>;
+  ///\brief The type of the Node
   using NodeIndex = typename Edge_T::NodeIndex;
 
   ///\brief The index of the Node
@@ -133,6 +142,14 @@ struct VertexDistance_T {
   CostType distance{0};
 
   ///\brief Compare two VertexDistance_T objects
+  ///\details This is used by the priority queue to order the elements in the
+  /// queue.  The priority queue will place the element with the greatest
+  /// distance at the top of the queue.  If there is a tie in distance, then
+  /// the element with the greatest node index will be placed at the top of the
+  /// queue.
+  ///\param other The other VertexDistance_T object to compare to
+  ///\return 0 if the two objects are equal, -1 if this object is less than the,
+  /// and 1 if this object is greater than the other object
   auto operator<=>(VertexDistance_T const& other) const {
     return (other.distance == distance && other.node_index == node_index)
                ? 0
@@ -145,6 +162,8 @@ struct VertexDistance_T {
   ///\brief Equality operator for two VertexDistance_T objects
   /// The equality operator is specified in conjunction with the spaceship
   /// operator as an optimization for the compiler
+  ///\param other The other VertexDistance_T object to compare to
+  ///\return true if the two objects are equal; otherwise false
   auto operator==(VertexDistance_T const& other) const {
     return other.distance == distance && other.node_index == node_index;
   }
@@ -160,18 +179,31 @@ struct VertexDistance_T {
 template <typename NodeValue_T, typename CostType_T>
 class UndirectedGraph {
  public:
+  ///\brief The type of the NodeValue
   using NodeValue = NodeValue_T;
+  ///\brief The type of the cost of the edge
   using CostType = CostType_T;
+  ///\brief The type of the Node
   using Edge_T = Edge<NodeValue, CostType>;
+  ///\brief The type of the Node
   using Node = typename Edge_T::Node_T;
+  ///\brief The type of the NodeIndex
   using NodeIndex = typename Edge_T::NodeIndex;
+  ///\brief The type of the EdgeList
   using EdgeList = std::vector<Edge_T>;
+  ///\brief The type of the NodeAdjacencyMap
   using NodeAdjacencyMap = std::unordered_map<NodeIndex, EdgeList>;
+  ///\brief The type of the NodeMap
   using NodeMap = std::unordered_map<NodeIndex, Node>;
+  ///\brief The type of the EdgeListIterator
   using EdgeListIterator = typename EdgeList::iterator;
+  ///\brief The type of the EdgeListConstIterator
   using NodeDistanceMap = std::unordered_map<NodeIndex, CostType>;
+  ///\brief The type of the VertexDistance
   using VertexDistance = VertexDistance_T<NodeValue, CostType>;
+  ///\brief The type of the VertexDistanceList
   using VertexDistanceList = std::vector<VertexDistance>;
+  ///\brief The type of the NodePriorityQueue
   using NodePriorityQueue =
       std::priority_queue<VertexDistance, VertexDistanceList,
                           std::greater<VertexDistance>>;

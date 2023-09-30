@@ -59,6 +59,7 @@ class BitSlidingWindow {
     return current_byte_ * kBitsPerByte + current_bit_in_byte_;
   }
 
+  ///\brief slide the window down the array by 1 bit
   void slide_window() {
     ++current_bit_in_byte_;
     if (current_bit_in_byte_ >= kBitsPerByte) {

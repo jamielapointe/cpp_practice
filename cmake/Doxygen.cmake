@@ -12,7 +12,7 @@ function(cpp_practice_enable_doxygen DOXYGEN_THEME)
   set(DOXYGEN_PROJECT_BRIEF "${PROJECT_DESCRIPTION}")
   set(DOXYGEN_CALLER_GRAPH YES)
   set(DOXYGEN_CALL_GRAPH YES)
-  set(DOXYGEN_EXTRACT_ALL YES)
+  set(DOXYGEN_EXTRACT_LOCAL_CLASSES NO)
   set(DOXYGEN_EXTRACT_STATIC YES)
   set(DOXYGEN_GENERATE_TREEVIEW YES)
 
@@ -25,6 +25,24 @@ function(cpp_practice_enable_doxygen DOXYGEN_THEME)
     set(DOXYGEN_CLANG_OPTIONS "-w -Wno-error")
     set(DOXYGEN_CLANG_DATABASE_PATH "${CMAKE_BINARY_DIR}")
   endif()
+
+  set(DOXYGEN_EXCLUDE_PATTERNS "*/test/*") # exclude test files
+  set(DOXYGEN_EXCLUDE_SYMBOLS "internal") # exclude internal namespace
+  set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/doxygen_docs")
+  set(DOXYGEN_ALLOW_UNICODE_NAMES YES)
+  set(DOXYGEN_GENERATE_HTML YES)
+  set(DOXYGEN_GENERATE_LATEX NO)
+  set(DOXYGEN_LOOKUP_CACHE_SIZE 2)
+  set(DOXYGEN_RECURSIVE YES)
+  set(DOXYGEN_SOURCE_BROWSER YES)
+  set(DOXYGEN_ENUM_VALUES_PER_LINE 1)
+  set(DOXYGEN_EXTRA_PACKAGES
+      amsmath
+      bm
+      algorithmic
+      array)
+
+  set(DOXYGEN_MACRO_EXPANSION YES)
 
   # svg files are much smaller than jpeg and png, and yet they have higher quality
   set(DOXYGEN_HAVE_DOT YES)

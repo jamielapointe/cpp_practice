@@ -22,6 +22,11 @@
 
 namespace cpp_practice::cpp_20::reverse_words {
 
+///\brief Reverse the order of the words in a string
+///\details Given an input string s, reverse the order of the words. This uses
+/// C++ 20 regex which is slower than other methods
+///\param s The string to reverse
+///\return std::string The string with the words reversed
 std::string reverseWordsSlowRegex(std::string s) {
   // collect all of the words in the string
   std::regex word_regex(R"(\w+)");
@@ -45,6 +50,11 @@ std::string reverseWordsSlowRegex(std::string s) {
   return reverse_words.str();
 }
 
+///\brief Reverse the order of the words in a string
+///\details Given an input string s, reverse the order of the words. This uses
+/// traditional C++ streams which is much faster than the regex method.
+///\param s The string to reverse
+///\return std::string The string with the words reversed
 std::string reverseWordsStringStream(std::string s) {
   // string stream method
   std::istringstream ss(s);
