@@ -69,6 +69,8 @@ inline constexpr bool kEnableSanitizerThread {convert_cmake_bool(@cpp_practice_E
 inline constexpr bool kEnableSanitizerMemory {convert_cmake_bool(@cpp_practice_ENABLE_SANITIZER_MEMORY@)};
 inline constexpr bool kEnableSanitizerHardening {convert_cmake_bool(@cpp_practice_ENABLE_HARDENING@)};
 
+inline constexpr bool kEnableLogging {convert_cmake_bool(@cpp_practice_ENABLE_LOGGING@)};
+
 inline constexpr Error_Action kDefaultErrorAction {Error_Action(@ERROR_ACTION_INDEX@)};
 // clang-format on
 

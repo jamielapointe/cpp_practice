@@ -31,6 +31,7 @@ macro(cpp_practice_enable_cppcheck CPPCHECK_OPTIONS)
           # ignores code that cppcheck thinks is invalid C++
           --suppress=syntaxError
           --suppress=preprocessorErrorDirective
+          --suppress=unknownMacro
           --inconclusive)
     else()
       # if the user provides a CPPCHECK_OPTIONS with a template specified, it will override this template

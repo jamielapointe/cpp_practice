@@ -138,15 +138,26 @@ jobs:
 
       - name: Configure CMake
         run: |
+          export PATH=~/.local/bin/doxygen-1.9.7/bin:$PATH
+          doxygen -v
           CXX=/usr/bin/${{matrix.compiler}} CC=/usr/bin/${{matrix.ccompiler}} cmake -S . -B ./build -G "${{matrix.generator}}" -D${{ env.PROJECT_NAME }}_ENABLE_IPO:BOOL=${{matrix.enable_ipo}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -D${{ env.PROJECT_NAME }}_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }} -D${{ env.PROJECT_NAME }}_ENABLE_SANITIZER_ADDRESS:BOOL=${{matrix.sanitizers}} -D${{ env.PROJECT_NAME }}_ENABLE_SANITIZER_LEAK:BOOL=${{matrix.sanitizers}} -D${{ env.PROJECT_NAME }}_ENABLE_SANITIZER_UNDEFINED:BOOL=${{matrix.sanitizers}}
 
-      - name: Build
+      - name: Build with Ninja
         if: ${{contains(matrix.generator, 'Ninja')}}
         working-directory: ./build
         run: |
           ninja -v
 
-      - name: Build
+      - name: Build Doxygen with Ninja
+        if:
+          ${{contains(matrix.generator, 'Ninja') && matrix.build_type ==
+          'Release' && matrix.sanitizers == false && matrix.compiler ==
+          'clang++-16' && matrix.enable_ipo == false}}
+        working-directory: ./build
+        run: |
+          ninja -v doxygen-docs
+
+      - name: Build with Make
         if: ${{contains(matrix.generator, 'Makefile')}}
         working-directory: ./build
         run: |

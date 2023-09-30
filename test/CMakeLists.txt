@@ -25,6 +25,7 @@ add_executable(
   test_fibonacci.cpp
   test_length_of_longest_substring.cpp
   test_list_sum_with_mask.cpp
+  test_logging.cpp
   test_main.cpp
   test_min_window.cpp
   test_path_through_the_maze.cpp

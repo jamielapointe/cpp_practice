@@ -16,27 +16,37 @@
 #pragma once
 
 #include <fmt/core.h>
-#include <spdlog/spdlog.h>
 
 #include <cassert>
 #include <cstdint>
 #include <type_traits>
 
 #include "cpp_practice/system_constants.h"
+#include "log/logger.h"
 
 namespace cpp_practice::internal {
 
+///\brief Print an error message to stderr and abort
+///\param expression String representation of the expression
+///\param file Source file where assert occurred
+///\param line Line number where assert occurred
+///\param function Function where assert occurred
+///\param message Optional error message
 inline void print_error(char const* const expression, char const* const file,
                         uint32_t line, char const* const function,
                         char const* const message) {
   // Print to stderr and abort, as specified in <cassert>.
-  spdlog::critical("Assertion failed at {}:{} in {}: {}; message = {}\n",
-                   file == nullptr ? "<file>" : file, line,
-                   function == nullptr ? "<function>" : function, expression,
-                   message == nullptr ? "" : message);
+  cpp_practice::log::critical(
+      "Assertion failed at {}:{} in {}: {}; message = {}\n",
+      file == nullptr ? "<file>" : file, line,
+      function == nullptr ? "<function>" : function, expression,
+      message == nullptr ? "" : message);
 }
 
-// Generic default assert handler.
+///\brief This is the default assert handler
+///
+///\tparam EnableIf SFINAE parameter
+///\tparam EmptyArgs SFINAE parameter
 template <typename EnableIf = void, typename... EmptyArgs>
 struct assert_handler_impl {
   static inline void run(char const* const expression, char const* const file,
@@ -47,14 +57,16 @@ struct assert_handler_impl {
   }
 };
 
-// Use POSIX __assert_fail handler when available.
-//
-// This allows us to integrate with systems that have custom handlers.
-//
-// NOTE: this handler is not always available on all POSIX systems (otherwise
-// we could simply test for __unix__ or similar).  The handler function name
-// seems to depend on the specific toolchain implementation, and differs between
-// compilers, platforms, OSes, etc.  Hence, we detect support via SFINAE.
+///\brief Use POSIX __assert_fail handler when available.
+///
+/// \details This allows us to integrate with systems that have custom handlers.
+///
+/// \note this handler is not always available on all POSIX systems (otherwise
+/// we could simply test for __unix__ or similar).  The handler function name
+/// seems to depend on the specific toolchain implementation, and differs
+/// between compilers, platforms, OSes, etc.  Hence, we detect support via
+/// SFINAE.
+/// \tparam EmptyArgs SFINAE parameter
 template <typename... EmptyArgs>
 struct assert_handler_impl<
     std::void_t<decltype(__assert_fail(

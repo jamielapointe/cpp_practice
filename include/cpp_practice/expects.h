@@ -8,13 +8,12 @@
 /// user configurable via CMake
 ///
 
-#include <spdlog/spdlog.h>
-
 #include <array>
 #include <source_location>
 #include <string_view>
 
 #include "cpp_practice_config.h"
+#include "log/logger.h"
 
 namespace cpp_practice {
 
@@ -29,6 +28,7 @@ enum class Error_Code {
   kSize
 };  // namespace cpp_practice
 
+///\brief String names for each error code
 inline constexpr std::array<std::string_view,
                             static_cast<size_t>(Error_Code::kSize)>
     kErrorCodeNames = {"RangeError", "LengthError", "NullptrError",
@@ -46,11 +46,18 @@ inline constexpr bool do_log_error() {
          action == options::Error_Action::kThrow;
 }
 
+///\brief Log an error message
+///\param error_code The Error_Code representing the category of error
+///\param file_name The file name where the error occurred
+///\param line The line number where the error occurred
+///\param column The column number where the error occurred
+///\param function_name The function name where the error occurred
+///\param message The optional message to include in the error
 inline void log_error(Error_Code error_code, std::string_view file_name,
                       uint_least32_t line, uint_least32_t column,
                       std::string_view function_name,
                       std::string_view message) {
-  spdlog::critical(
+  cpp_practice::log::critical(
       "Expectation with error_code {} [ {} ] failed at file {} ({}:{}) `{}`"
       "{}",
       static_cast<int>(error_code),
@@ -61,6 +68,17 @@ inline void log_error(Error_Code error_code, std::string_view file_name,
 
 }  // namespace internal
 
+///\brief Expect a condition to be true
+///\details This uses C++ 20 std::source_location to get the file name, line
+/// number, column number, and function name.  This is a runtime check and
+/// should be used sparingly.  Prefer static_asserts and concepts to verify
+/// invariance at compile time.
+///\tparam action The action to take when the condition is false
+///\tparam Condition_T The type of the condition to check
+///\param condition The condition to check
+///\param error_code The error code to use when the condition is false
+///\param message Optional message to include in the error
+///\param location Optional source location to use instead of the current
 template <options::Error_Action action = options::kDefaultErrorAction,
           typename Condition_T>
 inline void expect(

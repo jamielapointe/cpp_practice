@@ -1,4 +1,4 @@
-///\file minWindow.h
+///\file min_window.h
 ///\author Jamie LaPointe (jamie.lapointe@gmail.com)
 ///\brief LeetCode 76. Minimum Window Substring
 ///\version 0.1
@@ -20,6 +20,11 @@
 
 namespace cpp_practice::cpp_20::min_window {
 
+///\brief Find the minimum window substring
+///
+///\param s The string to search for the substring
+///\param t The substring to search for
+///\return std::string The minimum window substring
 std::string min_window(std::string s, std::string t) {
   using std::sort;
   using std::string;
