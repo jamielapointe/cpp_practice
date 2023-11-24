@@ -260,9 +260,8 @@ class UndirectedGraph {
   ///\param node_index The key of the Node whose Edge objects you want to return
   ///\return EdgeList&
   EdgeList& get_edges(NodeIndex node_index) {
-    typename NodeAdjacencyMap::iterator edge_iterator =
-        adjacency_map().find(node_index);
-    [[likely]] if (edge_iterator != adjacency_map().end()) {
+    [[likely]] if (auto edge_iterator = adjacency_map().find(node_index);
+                   edge_iterator != adjacency_map().end()) {
       return edge_iterator->second;
     }
     return empty_edge_list_;
