@@ -1,7 +1,7 @@
 ///\file cpp_practice_asserts.h
 ///\author Jamie LaPointe (jamie.lapointe@gmail.com)
 ///\brief Provide some project level asserts
-/// these asserts can be can be configured at compiled for certain behaviours
+/// these asserts can be can be configured at compiled for certain behaviors
 ///\version 0.1
 ///\date 2023-07-02
 ///
