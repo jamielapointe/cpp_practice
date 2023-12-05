@@ -21,6 +21,7 @@ add_executable(
   cpp_practice_tests
   test_binary_exponentiation.cpp
   test_breadth_first_search_unordered.cpp
+  test_endianess.cpp
   test_factorial.cpp
   test_fibonacci.cpp
   test_length_of_longest_substring.cpp
