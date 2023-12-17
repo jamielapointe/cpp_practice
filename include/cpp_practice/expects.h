@@ -81,7 +81,7 @@ inline void log_error(Error_Code error_code, std::string_view file_name,
 ///\param location Optional source location to use instead of the current
 template <options::Error_Action action = options::kDefaultErrorAction,
           typename Condition_T>
-inline void expect(
+inline constexpr void expect(
     Condition_T condition, Error_Code error_code, std::string_view message = "",
     std::source_location location = std::source_location::current()) {
   if constexpr (internal::do_log_error<action>()) {
@@ -98,8 +98,18 @@ inline void expect(
         throw error_code;
       }
     }
+  } else {
+    if constexpr (action == options::Error_Action::kAbort) {
+      std::abort();
+    }
+    if constexpr (action == options::Error_Action::kTerminate) {
+      std::terminate();
+    }
+    if constexpr (action == options::Error_Action::kThrow) {
+      throw error_code;
+    }
+    // Else no action
   }
-  // Else no action
 }
 
 }  // namespace cpp_practice
